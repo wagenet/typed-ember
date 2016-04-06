@@ -341,5 +341,3 @@ wstream.once('open', () => {
   writeNamespace(wstream, Namespace.root);
   wstream.end();
 });
-
-debugger
