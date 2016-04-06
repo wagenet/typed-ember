@@ -257,12 +257,41 @@ class ClassItem {
 
 class ClassItemParam {
   constructor(data) {
-    this.name = data.name;
-    this.type = data.type ? convertType(data.type) : 'any';
+    if (data.name[data.name.length-1] === '*') {
+      this.name = data.name.slice(0,-1);
+      this.spread = true;
+    } else {
+      this.name = data.name;
+    }
+
+    // Commonly used in docs, but arguments is protected
+    if (this.name === 'arguments') {
+      this.name = 'args';
+    }
+
+    // Sometimes the spread is in the type, seems weird.
+    let rawType = data.type;
+    if (rawType && rawType.indexOf('...') > -1) {
+      // FIXME: In some cases this may not be correct, e.g. "String...|Array" in Ember.getProperties
+      rawType = rawType.replace('...', '');
+      this.spread = true;
+    }
+
+    this.type = rawType ? convertType(rawType) : 'any';
   }
 
   toString() {
-    return `${this.name}: ${this.type}`;
+    let nameStr = this.name;
+    let typeStr = this.type;
+
+    if (this.spread) {
+      nameStr = `...${nameStr}`;
+      // FIXME: Ignoring the other types isn't really correct
+      let type = this.type.split('|')[0];
+      typeStr = (type === '{}' ? 'any' : type) + '[]';
+    }
+
+    return `${nameStr}: ${typeStr}`;
   }
 }
 
