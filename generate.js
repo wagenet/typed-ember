@@ -69,7 +69,13 @@ function partsRegexp(parts) {
   return str;
 }
 
+const RELATIVE_NAMES = {
+  'Ember.Array': 'Ember.Array'
+};
+
 function relativeName(name, base) {
+  if (RELATIVE_NAMES[name]) { return RELATIVE_NAMES[name]; }
+
   let parts = base.split('.');
   let reStr = `^(${partsRegexp(parts)})`;
   return name.replace(new RegExp(reStr), '');
@@ -85,9 +91,11 @@ class Klass {
   constructor(name, data) {
     this.name = name;
     this.fullName = data.name;
-    this.builtIn = BUILT_IN.indexOf(this.name) > -1;
+    this.builtIn = BUILT_IN.indexOf(this.fullName) > -1;
+    // Not used, but may be useful later
+    this.mixin = data.extension_for.length > 0;
     // REVIEW: Is it correct to treat prototype extensions as an interface?
-    this.type = (this.builtIn || data.extension_for.length > 0) ? 'interface' : 'class';
+    this.type = this.builtIn ? 'interface' : 'class';
     this.extends = data.extends;
     this.implements = data.uses;
     this.private = data.access === 'private';
@@ -125,7 +133,7 @@ class Klass {
   get declaration() {
     let str = `${this.type} ${this.name}`;
 
-    if (this.extends) {
+    if (this.extends && Klass.find(this.extends)) {
       str += ` extends ${relativeName(this.extends, this.fullName)}`;
     }
 
@@ -140,19 +148,22 @@ class Klass {
 
 // Does this matter?
 const RETURN_TYPES = {
-  'Array': 'any[]',
   'Any': 'any',
   '*': 'any',
+  'Class': 'any', // What is this really?
+  'Mixed': 'any',
+  'Array': 'any[]',
+  'Tuple': 'any[]', // Typescript can handle tuples better, but we don't have the info
   'Boolean': 'boolean',
   'String': 'string',
   'Number': 'number',
   'Object': '{}',
+  'Object?': '{}', // Why does this have a question mark?
   'Hash': '{}',
-  'Tuple': 'any[]', // Typescript can handle tuples better, but we don't have the info
   'Void': 'void'
 };
 
-function convertType(type) {
+function convertType(type, relativeBase) {
   // Make types in generics bar separated, not comma
   type = type.replace(/<(.+)>/, m => m.replace(/\s*,\s*/,'|'));
 
@@ -167,7 +178,11 @@ function convertType(type) {
   // Handle type list
   if (type.indexOf('|') > -1) {
     let types = type.split('|');
-    return types.map(t => convertType(t)).join('|');
+    return types.map(t => convertType(t, relativeBase)).join('|');
+  }
+
+  if (relativeBase && type.indexOf('.') > -1) {
+    type = relativeName(type, relativeBase);
   }
 
   return RETURN_TYPES[type] || type;
@@ -182,7 +197,7 @@ class ClassItem {
     this.name = data.name;
     this.klass = klass;
     this.itemType = data.itemtype;
-    this.type = data.type ? convertType(data.type) : 'any';
+    this.type = data.type ? convertType(data.type, this.klass.fullName) : 'any';
     this.static = !!data.static;
     this.description = data.description;
     this.private = data.access === 'private';
@@ -195,12 +210,12 @@ class ClassItem {
       }
 
       if (this.itemType === 'method') {
-        this.params = data.params.map(p => new ClassItemParam(p));
+        this.params = data.params.map(p => new ClassItemParam(p, this));
       }
     }
 
     if (data.return) {
-      this.returnType = data.return.type ? convertType(data.return.type) : 'void';
+      this.returnType = data.return.type ? convertType(data.return.type, this.klass.fullName) : 'void';
     }
   }
 
@@ -256,7 +271,7 @@ class ClassItem {
 }
 
 class ClassItemParam {
-  constructor(data) {
+  constructor(data, item) {
     if (data.name[data.name.length-1] === '*') {
       this.name = data.name.slice(0,-1);
       this.spread = true;
@@ -277,7 +292,7 @@ class ClassItemParam {
       this.spread = true;
     }
 
-    this.type = rawType ? convertType(rawType) : 'any';
+    this.type = rawType ? convertType(rawType, item.klass.fullName) : 'any';
   }
 
   toString() {
@@ -351,11 +366,8 @@ function writeNamespace(wstream, namespace, prefix) {
   let childPrefix = namespace.root ? '' : prefix + '  ';
 
   if (!namespace.root) {
-    if (prefix === '') { // top-level
-      wstream.write(`declare `);
-    }
-
-    wstream.write(`${prefix}namespace ${namespace.name} {\n`);
+    let declareExport = (prefix === '') ? 'declare' : 'export';
+    wstream.write(`${prefix}${declareExport} namespace ${namespace.name} {\n`);
 
     let selfClass = namespace.parent.classes.get(namespace.name);
     if (selfClass) {
@@ -366,7 +378,8 @@ function writeNamespace(wstream, namespace, prefix) {
   namespace.namespaces.forEach(ns => writeNamespace(wstream, ns, childPrefix));
   namespace.classes.forEach(klass => {
     if (klass.isNamespace) { return; }
-    wstream.write(`${childPrefix}${klass.declaration} {\n`);
+    let declareExport = (childPrefix === '') ? 'declare' : 'export';
+    wstream.write(`${childPrefix}${declareExport} ${klass.declaration} {\n`);
     writeItems(wstream, klass, childPrefix+'  ');
     wstream.write(`${childPrefix}}\n`);
   });
