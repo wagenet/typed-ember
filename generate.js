@@ -171,7 +171,7 @@ class ClassItem {
     this.name = data.name;
     this.klass = klass;
     this.itemType = data.itemtype;
-    this.type = convertType(data.type) || 'any';
+    this.type = data.type ? convertType(data.type) : 'any';
     this.static = !!data.static;
     this.description = data.description;
     this.private = data.access === 'private';
@@ -188,7 +188,9 @@ class ClassItem {
       }
     }
 
-    this.returnType = (data.return ? convertType(data.return.type) : null) || 'void';
+    if (data.return) {
+      this.returnType = data.return.type ? convertType(data.return.type) : 'void';
+    }
   }
 
   get jsDoc() {
@@ -230,7 +232,10 @@ class ClassItem {
     str += this.name.match('-') ? `'${this.name}'` : this.name;
 
     if (this.itemType === 'method') {
-      str += `(${this.params ? this.params.join(', ') : ''}): ${this.returnType}`;
+      str += `(${this.params ? this.params.join(', ') : ''})`;
+      if (this.returnType) {
+        str += `: ${this.returnType}`;
+      }
     } else {
       str += `: ${this.type}`;
     }
@@ -242,7 +247,7 @@ class ClassItem {
 class ClassItemParam {
   constructor(data) {
     this.name = data.name;
-    this.type = convertType(data.type) || 'any';
+    this.type = data.type ? convertType(data.type) : 'any';
   }
 
   toString() {
