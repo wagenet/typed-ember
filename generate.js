@@ -150,6 +150,11 @@ const RETURN_TYPES = {
 };
 
 function convertType(type) {
+  if (type.indexOf('|') > -1) {
+    let types = type.split('|');
+    return types.map(t => convertType(t)).join('|');
+  }
+
   if (type === 'Array') {
     return 'any[]';
   } else {
