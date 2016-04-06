@@ -140,26 +140,37 @@ class Klass {
 
 // Does this matter?
 const RETURN_TYPES = {
+  'Array': 'any[]',
   'Any': 'any',
   '*': 'any',
   'Boolean': 'boolean',
   'String': 'string',
   'Number': 'number',
   'Object': '{}',
-  'Hash': '{}'
+  'Hash': '{}',
+  'Tuple': 'any[]', // Typescript can handle tuples better, but we don't have the info
+  'Void': 'void'
 };
 
 function convertType(type) {
+  // Make types in generics bar separated, not comma
+  type = type.replace(/<(.+)>/, m => m.replace(/\s*,\s*/,'|'));
+
+  let curlies = type.match(/^\{(.+)\}/);
+  if (curlies) {
+    type = curlies[1];
+  } else {
+    // Throw away any additional descriptions (maybe should handle that elsewhere)
+    type = type.split(' ')[0];
+  }
+
+  // Handle type list
   if (type.indexOf('|') > -1) {
     let types = type.split('|');
     return types.map(t => convertType(t)).join('|');
   }
 
-  if (type === 'Array') {
-    return 'any[]';
-  } else {
-    return RETURN_TYPES[type] || type;
-  }
+  return RETURN_TYPES[type] || type;
 }
 
 function abbreviateDescription(str) {
