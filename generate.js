@@ -271,10 +271,8 @@ for (let name in docs.classes) {
 // Now that we should have created all namespaces, check to see if the klass
 // is actually a namespace
 classes.forEach(klass => {
-  Namespace.root.classes.forEach(klass => {
-    let namespace = Namespace.for(klass.fullName, { autocreate: false });
-    klass.isNamespace = !!namespace;
-  });
+  let namespace = Namespace.for(klass.fullName, { autocreate: false });
+  klass.isNamespace = !!namespace;
 });
 
 docs.classitems.forEach(data => {
