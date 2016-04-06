@@ -145,7 +145,8 @@ const RETURN_TYPES = {
   'Boolean': 'boolean',
   'String': 'string',
   'Number': 'number',
-  'Object': '{}'
+  'Object': '{}',
+  'Hash': '{}'
 };
 
 function convertType(type) {
