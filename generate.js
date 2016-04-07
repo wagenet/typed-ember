@@ -70,13 +70,26 @@ function partsRegexp(parts) {
 }
 
 const RELATIVE_NAMES = {
-  'Ember.Array': 'Ember.Array'
+  'Ember.Array': 'Ember.Array',
+  'RSVP.Promise': 'RSVP.Promise'
 };
 
 function relativeName(name, base) {
+  let parts = base.split('.');
+
+  // Find the full class name so we can handle it correctly in RELATIVE_NAMES!
+  if (/^[A-Z]/.test(name)) {
+    for (let size=parts.length; size > 0; size--) {
+      let klass = Klass.find(parts.slice(0,size).join('.')+`.${name}`, { allowMissingNamespace: true });
+      if (klass) {
+        name = klass.fullName;
+        break;
+      }
+    }
+  }
+
   if (RELATIVE_NAMES[name]) { return RELATIVE_NAMES[name]; }
 
-  let parts = base.split('.');
   let reStr = `^(${partsRegexp(parts)})`;
   return name.replace(new RegExp(reStr), '');
 }
@@ -89,6 +102,7 @@ const BUILT_IN = [
 
 class Klass {
   constructor(name, data) {
+    this.data = data;
     this.name = name;
     this.fullName = data.name;
     this.builtIn = BUILT_IN.indexOf(this.fullName) > -1;
@@ -96,11 +110,20 @@ class Klass {
     this.mixin = data.extension_for.length > 0;
     // REVIEW: Is it correct to treat prototype extensions as an interface?
     this.type = this.builtIn ? 'interface' : 'class';
-    this.extends = data.extends;
-    this.implements = data.uses;
     this.private = data.access === 'private';
     this.deprecated = data.deprecated;
     this.deprecationMessage = data.deprecationMessage;
+
+    // If it extends or uses anything, we can know it's a true class.
+    // However, it may be a true class without either of these being true.
+    // In the Ember docs we pretend certain namespaces are classes, which isn't great.
+    this.isTrueClass = data.extends || data.uses;
+
+    // Hack for correct RSVP promise
+    if (this.fullName === 'RSVP.Promise') {
+      this.implements = ['Promise<T>'];
+      this.generics = "T";
+    }
 
     this.items = new Map();
   }
@@ -119,26 +142,84 @@ class Klass {
     return klass;
   }
 
-  static find(fullName) {
+  static find(fullName, options) {
+    options = options || { allowMissingNamespace: false };
+
     let names = namespaceAndKlassName(fullName);
     let namespace = Namespace.for(names[0]);
 
     if (!namespace) {
-      throw `No namespace found; name=${fullName}`;
+      if (options.allowMissingNamespace) {
+        return;
+      } else {
+        throw `No namespace found; name=${fullName}`;
+      }
     }
 
     return namespace.classes.get(names[1]);
   }
 
-  get declaration() {
-    let str = `${this.type} ${this.name}`;
+  // Run after all items have been initialize from the JSON
+  postProcess() {
+    if (this.postProcessed) { return; }
+    this.postProcessed = true;
 
-    if (this.extends && Klass.find(this.extends)) {
-      str += ` extends ${relativeName(this.extends, this.fullName)}`;
+    let namespace = Namespace.for(this.fullName, { autocreate: false });
+    this.isNamespace = !!namespace;
+
+    if (this.data.extends) {
+      let klass = Klass.find(this.data.extends);
+      this.extends = klass;
+    }
+
+    if (this.data.uses) {
+      let impls = this.data.uses.map(i => Klass.find(i)).filter(i => i);
+      if (impls.length > 0) {
+        this.implements = impls;
+      }
     }
 
     if (this.implements) {
-      str += ` implements ${this.implements.map(i => relativeName(i, this.fullName)).join(', ')}`;
+      this.implements.forEach(k => {
+        if (k instanceof Klass) {
+          // Make sure it's already been post processed so their methods are correct
+          k.postProcess();
+
+          // Copy over all items that aren't defined
+          k.items.forEach((i, name) => {
+            if (i.private) { return; }
+
+            let existing = this.items.get(name);
+            if (existing) {
+              if (existing.private) {
+                console.warn(`Setting private to false for ${this.fullName}#${name} since it's required for implementation`);
+                existing.private = false;
+              }
+            } else {
+              this.items.set(name, new ClassItem(i.data, this));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  get declaration() {
+    let str = `${this.type} ${this.name}`;
+
+    if (this.generics) {
+      str += `<${this.generics}>`;
+    }
+
+    if (this.extends) {
+      str += ` extends ${relativeName(this.extends.fullName, this.fullName)}`;
+    }
+
+    if (this.implements) {
+      let impls = this.implements.map(i => {
+        return typeof i === 'string' ? i : relativeName(i.fullName, this.fullName);
+      });
+      str += ` implements ${impls.join(', ')}`;
     }
 
     return str;
@@ -160,7 +241,9 @@ const RETURN_TYPES = {
   'Object': '{}',
   'Object?': '{}', // Why does this have a question mark?
   'Hash': '{}',
-  'Void': 'void'
+  'Void': 'void',
+  'RSVP.Promise': 'RSVP.Promise<any>',  // 'any' may not actually be correct, but we don't know
+  'Promise': 'Promise<any>' // 'any' may not actually be correct, but we don't know
 };
 
 function convertType(type, relativeBase) {
@@ -181,7 +264,7 @@ function convertType(type, relativeBase) {
     return types.map(t => convertType(t, relativeBase)).join('|');
   }
 
-  if (relativeBase && type.indexOf('.') > -1) {
+  if (relativeBase) {
     type = relativeName(type, relativeBase);
   }
 
@@ -194,6 +277,7 @@ function abbreviateDescription(str) {
 
 class ClassItem {
   constructor(data, klass) {
+    this.data = data;
     this.name = data.name;
     this.klass = klass;
     this.itemType = data.itemtype;
@@ -242,7 +326,7 @@ class ClassItem {
   get declaration() {
     let str = '';
 
-    if (this.klass.isNamespace) {
+    if (this.klass.isNamespace && !this.klass.isTrueClass) {
       // REVIEW: Should we expect these items to be marked as static?
       if (this.itemType === 'method') {
         str += 'function ';
@@ -254,8 +338,9 @@ class ClassItem {
       str += 'static ';
     }
 
-    // REVIEW: Is quoting strings with dashes the correct thing to do?
-    str += this.name.match('-') ? `'${this.name}'` : this.name;
+    // REVIEW: Is quoting strings with special chars the correct thing to do?
+    // Consider using js-string-escape
+    str += this.name.match(/^[$A-Z_][0-9A-Z_$]*$/i) ? this.name : `'${this.name}'`;
 
     if (this.itemType === 'method') {
       str += `(${this.params ? this.params.join(', ') : ''})`;
@@ -323,13 +408,6 @@ for (let name in docs.classes) {
   classes.push(klass);
 }
 
-// Now that we should have created all namespaces, check to see if the klass
-// is actually a namespace
-classes.forEach(klass => {
-  let namespace = Namespace.for(klass.fullName, { autocreate: false });
-  klass.isNamespace = !!namespace;
-});
-
 docs.classitems.forEach(data => {
   let klass = Klass.find(data.class);
 
@@ -342,6 +420,9 @@ docs.classitems.forEach(data => {
     klass.items.set(item.name, item);
   }
 });
+
+// Do this after all data has been loaded from the JSON
+classes.forEach(k => k.postProcess());
 
 function prefixLines(str, prefix) {
   let lines = str.split('\n');
@@ -359,8 +440,6 @@ function writeItems(wstream, klass, prefix) {
 }
 
 function writeNamespace(wstream, namespace, prefix) {
-  if (namespace.private) { return; }
-
   prefix = prefix || '';
 
   let childPrefix = namespace.root ? '' : prefix + '  ';
@@ -377,7 +456,7 @@ function writeNamespace(wstream, namespace, prefix) {
 
   namespace.namespaces.forEach(ns => writeNamespace(wstream, ns, childPrefix));
   namespace.classes.forEach(klass => {
-    if (klass.isNamespace) { return; }
+    if (klass.isNamespace && !klass.isTrueClass) { return; }
     let declareExport = (childPrefix === '') ? 'declare' : 'export';
     wstream.write(`${childPrefix}${declareExport} ${klass.declaration} {\n`);
     writeItems(wstream, klass, childPrefix+'  ');
@@ -391,6 +470,22 @@ function writeNamespace(wstream, namespace, prefix) {
 
 var wstream = fs.createWriteStream('ember.d.ts');
 wstream.once('open', () => {
+  // From browser
+  wstream.write('interface DOMElement {}\n');
+  // Use https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/es6-promise/es6-promise.d.ts
+  wstream.write('interface Promise<T> {}\n');
+  // From Ember container but docs not generated for the container
+  wstream.write('declare class Registry {}\n');
+  // Is this from Router internals?
+  wstream.write('declare class Transition {}\n');
+  // Import Handlebars d.ts instead
+  wstream.write('declare namespace Handlebars { class SafeString {} }\n');
+  // Import jQuery d.ts instead
+  wstream.write('declare class JQuery {}\n');
+
+  wstream.write('\n\n');
+
   writeNamespace(wstream, Namespace.root);
+
   wstream.end();
 });

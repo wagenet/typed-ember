@@ -1,3 +1,11 @@
+interface DOMElement {}
+interface Promise<T> {}
+declare class Registry {}
+declare class Transition {}
+declare namespace Handlebars { class SafeString {} }
+declare class JQuery {}
+
+
 declare namespace RSVP {
   /**
    * @description This is a convenient alias for `RSVP.Promise.all`.
@@ -10,15 +18,15 @@ declare namespace RSVP {
   /**
    * @description This is a convenient alias for `RSVP.Promise.reject`.
    */
-  function reject(reason: any, label: string): Promise;
+  function reject(reason: any, label: string): RSVP.Promise<any>;
   /**
    * @description This is a convenient alias for `RSVP.Promise.resolve`.
    */
-  function resolve(value: any, label: string): Promise;
+  function resolve(value: any, label: string): RSVP.Promise<any>;
   /**
    * @description `RSVP.allSettled` is similar to `RSVP.all`, but instead of implementing a fail-fast method, it waits until all the promises have returned and shows you all the results. This is useful if you want to handle multiple promises' failure states together as a set.
    */
-  function allSettled(entries: any[], label: string): Promise;
+  function allSettled(entries: any[], label: string): RSVP.Promise<any>;
   /**
    * @description `RSVP.defer` returns an object similar to jQuery's `$.Deferred`. `RSVP.defer` should be used when porting over code reliant on `$.Deferred`'s interface. New code should use the `RSVP.Promise` constructor instead.
    */
@@ -26,19 +34,19 @@ declare namespace RSVP {
   /**
    * @description `RSVP.filter` is similar to JavaScript's native `filter` method, except that it waits for all promises to become fulfilled before running the `filterFn` on each item in given to `promises`. `RSVP.filter` returns a promise that will become fulfilled with the result of running `filterFn` on the values the promises become fulfilled with.
    */
-  function filter(promises: any[], filterFn: Function, label: string): Promise;
+  function filter(promises: any[], filterFn: Function, label: string): RSVP.Promise<any>;
   /**
    * @description `RSVP.hashSettled` is similar to `RSVP.allSettled`, but takes an object instead of an array for its `promises` argument.
    */
-  function hashSettled(object: {}, label: string): Promise;
+  function hashSettled(object: {}, label: string): RSVP.Promise<any>;
   /**
    * @description `RSVP.hash` is similar to `RSVP.all`, but takes an object instead of an array for its `promises` argument.
    */
-  function hash(object: {}, label: string): Promise;
+  function hash(object: {}, label: string): RSVP.Promise<any>;
   /**
    * @description `RSVP.map` is similar to JavaScript's native `map` method, except that it waits for all promises to become fulfilled before running the `mapFn` on each item in given to `promises`. `RSVP.map` returns a promise that will become fulfilled with the result of running `mapFn` on the values the promises become fulfilled with.
    */
-  function map(promises: any[], mapFn: Function, label: string): Promise;
+  function map(promises: any[], mapFn: Function, label: string): RSVP.Promise<any>;
   /**
    * @description `RSVP.denodeify` takes a 'node-style' function and returns a function that will return an `RSVP.Promise`. You can use `denodeify` in Node.js or the browser when you'd prefer to use promises over using callbacks. For example, `denodeify` transforms the following:
    */
@@ -49,19 +57,19 @@ declare namespace RSVP {
   function rethrow(reason: Error);
   export class EventTarget {
   }
-  export class Promise {
+  export class Promise<T> implements Promise<T> {
     /**
      * @description The primary way of interacting with a promise is through its `then` method, which registers callbacks to receive either a promise's eventual value or the reason why the promise cannot be fulfilled.
      */
-    then(onFulfillment: Function, onRejection: Function, label: string): Promise;
+    then(onFulfillment: Function, onRejection: Function, label: string): RSVP.Promise<any>;
     /**
      * @description `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same as the catch block of a try/catch statement.
      */
-    catch(onRejection: Function, label: string): Promise;
+    catch(onRejection: Function, label: string): RSVP.Promise<any>;
     /**
      * @description `finally` will be invoked regardless of the promise's fate just as native try/catch/finally behaves
      */
-    finally(callback: Function, label: string): Promise;
+    finally(callback: Function, label: string): RSVP.Promise<any>;
   }
 }
 declare namespace Ember {
@@ -136,7 +144,7 @@ declare namespace Ember {
   /**
    * @description Send an event. The execution of suspended listeners is skipped, and once listeners are removed. A listener without a target is executed on the passed object. If an array of actions is not passed, the actions stored on the passed object are invoked.
    */
-  function sendEvent(obj: any, eventName: string, params: any[], actions: any[]): void;
+  function sendEvent(obj: any, eventName: string, params: Ember.Array, actions: Ember.Array): void;
   /**
    * @description Define a property as a function that should be executed when a specified event or events are triggered.
    */
@@ -202,7 +210,7 @@ declare namespace Ember {
   /**
    * @description Checks to see if the `methodName` exists on the `obj`, and if it does, invokes it with the arguments passed.
    */
-  function tryInvoke(obj: {}, methodName: string, args: any[]): any;
+  function tryInvoke(obj: {}, methodName: string, args: Ember.Array): any;
   /**
    * @description Creates an `Ember.NativeArray` from an Array like object. Does not modify the original object. Ember.A is not needed if `Ember.EXTEND_PROTOTYPES` is `true` (the default value). However, it is recommended that you use Ember.A when creating addons for ember or when you can not guarantee that `Ember.EXTEND_PROTOTYPES` will be `true`.
    */
@@ -375,19 +383,19 @@ declare namespace Ember {
     /**
      * @description Loads a route, sets up any controllers, and renders any templates associated with the route as though a real user had triggered the route change while using your app.
      */
-    function visit(url: string): RSVP.Promise;
+    function visit(url: string): RSVP.Promise<any>;
     /**
      * @description Clicks an element and triggers any actions triggered by the element's `click` event.
      */
-    function click(selector: string): RSVP.Promise;
+    function click(selector: string): RSVP.Promise<any>;
     /**
      * @description Simulates a key event, e.g. `keypress`, `keydown`, `keyup` with the desired keyCode
      */
-    function keyEvent(selector: string, type: string, keyCode: number): RSVP.Promise;
+    function keyEvent(selector: string, type: string, keyCode: number): RSVP.Promise<any>;
     /**
      * @description Fills in an input element with some text.
      */
-    function fillIn(selector: string, text: string): RSVP.Promise;
+    function fillIn(selector: string, text: string): RSVP.Promise<any>;
     /**
      * @description Finds an element in the context of the app's container element. A simple alias for `app.$(selector)`.
      */
@@ -399,7 +407,7 @@ declare namespace Ember {
     /**
      * @description Causes the run loop to process any pending events. This is used to ensure that any async operations from other helpers (or your assertions) have been processed.
      */
-    function wait(value: {}): RSVP.Promise;
+    function wait(value: {}): RSVP.Promise<any>;
     /**
      * @description Returns the currently active route name.
      */
@@ -419,7 +427,7 @@ declare namespace Ember {
     /**
      * @description Triggers the given DOM event on the element identified by the provided selector.
      */
-    function triggerEvent(selector: string, context: string, type: string, options: {}): RSVP.Promise;
+    function triggerEvent(selector: string, context: string, type: string, options: {}): RSVP.Promise<any>;
     /**
      * @description This hook defers the readiness of the application, so that you can start the app when your tests are ready to run. It also sets the router's location to 'none', so that the window's location will not be modified (preventing both accidental leaking of state between tests and interference with your testing framework).
      */
@@ -493,6 +501,8 @@ declare namespace Ember {
     export class QUnitAdapter extends Adapter {
     }
   }
+  export class ApplicationInstance extends EngineInstance {
+  }
   export class Application extends Engine implements RegistryProxyMixin {
     /**
      * @description The root DOM element of the Application. This can be specified as an element or a [jQuery-compatible selector string](http://api.jquery.com/category/selectors/).
@@ -526,14 +536,106 @@ declare namespace Ember {
      * @description This creates a registry with the default Ember naming conventions.
      */
     static buildRegistry(namespace: Application): Registry;
+    /**
+     * @description Given a fullName return the corresponding factory.
+     */
+    resolveRegistration(fullName: string): Function;
+    /**
+     * @description Registers a factory that can be used for dependency injection (with `inject`) or for service lookup. Each factory is registered with a full name including two parts: `type:name`.
+     */
+    register(fullName: string, factory: Function, options: {});
+    /**
+     * @description Unregister a factory.
+     */
+    unregister(fullName: string);
+    /**
+     * @description Check if a factory is registered.
+     */
+    hasRegistration(fullName: string): boolean;
+    /**
+     * @description Register an option for a particular factory.
+     */
+    registerOption(fullName: string, optionName: string, options: {});
+    /**
+     * @description Return a specific registered option for a particular factory.
+     */
+    registeredOption(fullName: string, optionName: string): {};
+    /**
+     * @description Register options for a particular factory.
+     */
+    registerOptions(fullName: string, options: {});
+    /**
+     * @description Return registered options for a particular factory.
+     */
+    registeredOptions(fullName: string): {};
+    /**
+     * @description Allow registering options for all factories of a type.
+     */
+    registerOptionsForType(type: string, options: {});
+    /**
+     * @description Return the registered options for all factories of a type.
+     */
+    registeredOptionsForType(type: string): {};
+    /**
+     * @description Define a dependency injection onto a specific factory or all factories of a type.
+     */
+    inject(factoryNameOrType: string, property: string, injectionName: string);
   }
   export class EngineInstance extends Object implements RegistryProxyMixin, ContainerProxyMixin {
     /**
      * @description Unregister a factory.
      */
     unregister(fullName: string);
+    /**
+     * @description Given a fullName return the corresponding factory.
+     */
+    resolveRegistration(fullName: string): Function;
+    /**
+     * @description Registers a factory that can be used for dependency injection (with `inject`) or for service lookup. Each factory is registered with a full name including two parts: `type:name`.
+     */
+    register(fullName: string, factory: Function, options: {});
+    /**
+     * @description Check if a factory is registered.
+     */
+    hasRegistration(fullName: string): boolean;
+    /**
+     * @description Register an option for a particular factory.
+     */
+    registerOption(fullName: string, optionName: string, options: {});
+    /**
+     * @description Return a specific registered option for a particular factory.
+     */
+    registeredOption(fullName: string, optionName: string): {};
+    /**
+     * @description Register options for a particular factory.
+     */
+    registerOptions(fullName: string, options: {});
+    /**
+     * @description Return registered options for a particular factory.
+     */
+    registeredOptions(fullName: string): {};
+    /**
+     * @description Allow registering options for all factories of a type.
+     */
+    registerOptionsForType(type: string, options: {});
+    /**
+     * @description Return the registered options for all factories of a type.
+     */
+    registeredOptionsForType(type: string): {};
+    /**
+     * @description Define a dependency injection onto a specific factory or all factories of a type.
+     */
+    inject(factoryNameOrType: string, property: string, injectionName: string);
+    /**
+     * @description Returns an object that can be used to provide an owner to a manually created instance.
+     */
+    ownerInjection(): {};
+    /**
+     * @description Given a fullName return a corresponding instance.
+     */
+    lookup(fullName: string, options: {}): any;
   }
-  export class Engine extends Namespace implements RegistryProxy {
+  export class Engine extends Namespace {
     /**
      * @description This creates a registry with the default Ember naming conventions.
      */
@@ -623,7 +725,7 @@ declare namespace Ember {
     /**
      * @description Returns the available classes a given type.
      */
-    catalogEntriesByType(type: string): any[];
+    catalogEntriesByType(type: string): Ember.Array;
   }
   export class DataAdapter {
     /**
@@ -637,7 +739,7 @@ declare namespace Ember {
     /**
      * @description Specifies how records can be filtered. Records returned will need to have a `filterValues` property with a key for every name in the returned array.
      */
-    getFilters(): any[];
+    getFilters(): Ember.Array;
     /**
      * @description Fetch the model types and observe them for changes.
      */
@@ -658,15 +760,15 @@ declare namespace Ember {
      * @description Apply formatting options to the string. This will look for occurrences of "%@" in your string and substitute them with the arguments you pass into this method. If you want to control the specific order of replacement, you can add a number after the key as well to indicate which argument you want to insert.
      * @deprecated Use ES6 template strings instead: http://babeljs.io/docs/learn-es2015/#template-strings
      */
-    fmt(str: string, formats: any[]): string;
+    fmt(str: string, formats: Ember.Array): string;
     /**
      * @description Formats the passed string, but first looks up the string in the localized strings hash. This is a convenient way to localize text. See `Ember.String.fmt()` for more information on formatting.
      */
-    loc(str: string, formats: any[]): string;
+    loc(str: string, formats: Ember.Array): string;
     /**
      * @description Splits a string into separate units separated by spaces, eliminating any empty strings in the process. This is a convenience method for split that is mostly useful when applied to the `String.prototype`.
      */
-    w(str: string): any[];
+    w(str: string): Ember.Array;
     /**
      * @description Converts a camelized string into all lower case separated by underscores.
      */
@@ -700,7 +802,7 @@ declare namespace Ember {
     /**
      * @description Override this function when writing a class-based helper.
      */
-    compute(params: any[], hash: {});
+    compute(params: Ember.Array, hash: {});
     /**
      * @description In many cases, the ceremony of a full `Ember.Helper` class is not required. The `helper` method create pure-function helpers without instances. For example:
      */
@@ -937,7 +1039,7 @@ declare namespace Ember {
      * @description Replaces objects in an array with the passed objects.
      * @deprecated 
      */
-    replace(array: any[], idx: number, amt: number, objects: any[]): any[];
+    replace(array: Ember.Array, idx: number, amt: number, objects: Ember.Array): Ember.Array;
     /**
      * @description If no run-loop is present, it creates a new one. If a run loop is present it will queue itself to run on the existing run-loops action queue.
      */
@@ -981,11 +1083,11 @@ declare namespace Ember {
     /**
      * @description Delay calling the target method until the debounce period has elapsed with no additional debounce calls. If `debounce` is called again before the specified time has elapsed, the timer is reset and the entire period must pass again before the target method is called.
      */
-    debounce(target: {}, method: Function|string, ...args: any[], wait: number, immediate: boolean): any[];
+    debounce(target: {}, method: Function|string, ...args: any[], wait: number, immediate: boolean): Ember.Array;
     /**
      * @description Ensure that the target method is never called more frequently than the specified spacing period. The target method is called immediately.
      */
-    throttle(target: {}, method: Function|string, ...args: any[], spacing: number, immediate: boolean): any[];
+    throttle(target: {}, method: Function|string, ...args: any[], spacing: number, immediate: boolean): Ember.Array;
   }
   export class LinkComponent extends Component {
     /**
@@ -1015,11 +1117,11 @@ declare namespace Ember {
     /**
      * @description By default the `{{link-to}}` component will bind to the `href` and `title` attributes. It's discouraged that you override these defaults, however you can push onto the array if needed.
      */
-    attributeBindings: any[];
+    attributeBindings: Ember.Array;
     /**
      * @description By default the `{{link-to}}` component will bind to the `active`, `loading`, and `disabled` classes. It is discouraged to override these directly.
      */
-    classNameBindings: any[];
+    classNameBindings: Ember.Array;
   }
   export class ControllerMixin implements ActionHandler {
     /**
@@ -1038,6 +1140,14 @@ declare namespace Ember {
      * @description The controller's current model. When retrieving or modifying a controller's model, this property should be used instead of the `content` property.
      */
     model: any;
+    /**
+     * @description The collection of functions, keyed by name, available on this `ActionHandler` as action targets.
+     */
+    actions: {};
+    /**
+     * @description Triggers a named action on the `ActionHandler`. Any parameters supplied after the `actionName` string will be passed as arguments to the action target function.
+     */
+    send(actionName: string, context: any);
   }
   export class Location {
   }
@@ -1113,11 +1223,11 @@ declare namespace Ember {
     /**
      * @description This hook is the first of the route entry validation hooks called when an attempt is made to transition into a route or one of its children. It is called before `model` and `afterModel`, and is appropriate for cases when:
      */
-    beforeModel(transition: Transition): Promise;
+    beforeModel(transition: Transition): Promise<any>;
     /**
      * @description This hook is called after this route's model has resolved. It follows identical async/promise semantics to `beforeModel` but is provided the route's resolved model in addition to the `transition`, and is therefore suited to performing logic that can only take place after the model has already resolved.
      */
-    afterModel(resolvedModel: {}, transition: Transition): Promise;
+    afterModel(resolvedModel: {}, transition: Transition): Promise<any>;
     /**
      * @description A hook you can implement to optionally redirect to another route.
      */
@@ -1125,11 +1235,11 @@ declare namespace Ember {
     /**
      * @description A hook you can implement to convert the URL into the model for this route.
      */
-    model(params: {}, transition: Transition): {}|Promise;
+    model(params: {}, transition: Transition): {}|Promise<any>;
     /**
      * @description A hook you can implement to convert the route's model into parameters for the URL.
      */
-    serialize(model: {}, params: any[]): {};
+    serialize(model: {}, params: Ember.Array): {};
     /**
      * @description A hook you can use to setup the controller for the current route.
      */
@@ -1154,6 +1264,30 @@ declare namespace Ember {
      * @description Disconnects a view that has been rendered into an outlet.
      */
     disconnectOutlet(options: {}|string);
+    /**
+     * @description The collection of functions, keyed by name, available on this `ActionHandler` as action targets.
+     */
+    actions: {};
+    /**
+     * @description Subscribes to a named event with given function.
+     */
+    on(name: string, target: {}, method: Function): void;
+    /**
+     * @description Subscribes a function to a named event and then cancels the subscription after the first time the event is triggered. It is good to use ``one`` when you only care about the first time an event has taken place.
+     */
+    one(name: string, target: {}, method: Function): void;
+    /**
+     * @description Triggers a named event for the object. Any additional arguments will be passed as parameters to the functions that are subscribed to the event.
+     */
+    trigger(name: string, ...args: any[]);
+    /**
+     * @description Cancels subscription for given name, target, and method.
+     */
+    off(name: string, target: {}, method: Function): void;
+    /**
+     * @description Checks to see if object has any subscriptions for named event.
+     */
+    has(name: string): boolean;
   }
   export class Router extends Object implements Evented {
     /**
@@ -1176,8 +1310,52 @@ declare namespace Ember {
      * @description The `Router.map` function allows you to define mappings from URLs to routes in your application. These mappings are defined within the supplied callback function using `this.route`.
      */
     map(callback: any);
+    /**
+     * @description Subscribes to a named event with given function.
+     */
+    on(name: string, target: {}, method: Function): void;
+    /**
+     * @description Subscribes a function to a named event and then cancels the subscription after the first time the event is triggered. It is good to use ``one`` when you only care about the first time an event has taken place.
+     */
+    one(name: string, target: {}, method: Function): void;
+    /**
+     * @description Triggers a named event for the object. Any additional arguments will be passed as parameters to the functions that are subscribed to the event.
+     */
+    trigger(name: string, ...args: any[]);
+    /**
+     * @description Cancels subscription for given name, target, and method.
+     */
+    off(name: string, target: {}, method: Function): void;
+    /**
+     * @description Checks to see if object has any subscriptions for named event.
+     */
+    has(name: string): boolean;
   }
   export class Controller extends Object implements ControllerMixin {
+    /**
+     * @description Defines which query parameters the controller accepts. If you give the names `['category','page']` it will bind the values of these query parameters to the variables `this.category` and `this.page`
+     */
+    queryParams: any;
+    /**
+     * @description Transition the application into another route. The route may be either a single route or route path:
+     */
+    transitionToRoute(name: string, ...models: any[], options: {});
+    /**
+     * @description The object to which actions from the view should be sent.
+     */
+    target: any;
+    /**
+     * @description The controller's current model. When retrieving or modifying a controller's model, this property should be used instead of the `content` property.
+     */
+    model: any;
+    /**
+     * @description The collection of functions, keyed by name, available on this `ActionHandler` as action targets.
+     */
+    actions: {};
+    /**
+     * @description Triggers a named action on the `ActionHandler`. Any parameters supplied after the `actionName` string will be passed as arguments to the action target function.
+     */
+    send(actionName: string, context: any);
   }
   export class inject {
     /**
@@ -1213,15 +1391,15 @@ declare namespace Ember {
     /**
      * @description This returns the objects at the specified indexes, using `objectAt`.
      */
-    objectsAt(indexes: any[]): any[];
+    objectsAt(indexes: Ember.Array): Ember.Array;
     /**
      * @description This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
      */
-    []: any;
+    '[]': any;
     /**
      * @description Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
      */
-    slice(beginIndex: number, endIndex: number): any[];
+    slice(beginIndex: number, endIndex: number): Ember.Array;
     /**
      * @description Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
      */
@@ -1253,13 +1431,7 @@ declare namespace Ember {
     /**
      * @description Returns a special object that can be used to observe individual properties on the array. Just get an equivalent property on this object and it will return an enumerable that maps automatically to the named key on the member objects.
      */
-    @each: any;
-  }
-  export class Comparable {
-  }
-  export class Copyable {
-  }
-  export class Enumerable {
+    '@each': any;
     /**
      * @description Helper method returns the first object from a collection. This is usually used by bindings and other parts of the framework to extract a single object if the enumerable contains only one item.
      */
@@ -1279,7 +1451,7 @@ declare namespace Ember {
     /**
      * @description Alias for `mapBy`
      */
-    getEach(key: string): any[];
+    getEach(key: string): Ember.Array;
     /**
      * @description Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
      */
@@ -1287,27 +1459,27 @@ declare namespace Ember {
     /**
      * @description Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
      */
-    map(callback: Function, target: {}): any[];
+    map(callback: Function, target: {}): Ember.Array;
     /**
      * @description Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
      */
-    mapBy(key: string): any[];
+    mapBy(key: string): Ember.Array;
     /**
      * @description Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
      */
-    filter(callback: Function, target: {}): any[];
+    filter(callback: Function, target: {}): Ember.Array;
     /**
      * @description Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
      */
-    reject(callback: Function, target: {}): any[];
+    reject(callback: Function, target: {}): Ember.Array;
     /**
      * @description Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
      */
-    filterBy(key: string, value: any): any[];
+    filterBy(key: string, value: any): Ember.Array;
     /**
      * @description Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
      */
-    rejectBy(key: string, value: string): any[];
+    rejectBy(key: string, value: string): Ember.Array;
     /**
      * @description Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
      */
@@ -1339,15 +1511,15 @@ declare namespace Ember {
     /**
      * @description Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
      */
-    invoke(methodName: string, ...args: any[]): any[];
+    invoke(methodName: string, ...args: any[]): Ember.Array;
     /**
      * @description Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
      */
-    toArray(): any[];
+    toArray(): Ember.Array;
     /**
      * @description Returns a copy of the array with all `null` and `undefined` elements removed.
      */
-    compact(): any[];
+    compact(): Ember.Array;
     /**
      * @description Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
      */
@@ -1359,7 +1531,113 @@ declare namespace Ember {
     /**
      * @description Converts the enumerable into an array and sorts by the keys specified in the argument.
      */
-    sortBy(property: string): any[];
+    sortBy(property: string): Ember.Array;
+  }
+  export class Comparable {
+  }
+  export class Copyable {
+  }
+  export class Enumerable {
+    /**
+     * @description Helper method returns the first object from a collection. This is usually used by bindings and other parts of the framework to extract a single object if the enumerable contains only one item.
+     */
+    firstObject: any;
+    /**
+     * @description Helper method returns the last object from a collection. If your enumerable contains only one object, this method should always return that object. If your enumerable is empty, this method should return `undefined`.
+     */
+    lastObject: any;
+    /**
+     * @description Returns `true` if the passed object can be found in the receiver. The default version will iterate through the enumerable until the object is found. You may want to override this with a more efficient version.
+     */
+    contains(obj: {}): boolean;
+    /**
+     * @description Iterates through the enumerable, calling the passed function on each item. This method corresponds to the `forEach()` method defined in JavaScript 1.6.
+     */
+    forEach(callback: Function, target: {}): {};
+    /**
+     * @description Alias for `mapBy`
+     */
+    getEach(key: string): Ember.Array;
+    /**
+     * @description Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
+     */
+    setEach(key: string, value: {}): {};
+    /**
+     * @description Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
+     */
+    map(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
+     */
+    mapBy(key: string): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
+     */
+    filter(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
+     */
+    reject(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    filterBy(key: string, value: any): Ember.Array;
+    /**
+     * @description Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
+     */
+    rejectBy(key: string, value: string): Ember.Array;
+    /**
+     * @description Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
+     */
+    find(callback: Function, target: {}): {};
+    /**
+     * @description Returns the first item with a property matching the passed value. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    findBy(key: string, value: string): {};
+    /**
+     * @description Returns `true` if the passed function returns true for every item in the enumeration. This corresponds with the `every()` method in JavaScript 1.6.
+     */
+    every(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for all items in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isEvery(key: string, value: string): boolean;
+    /**
+     * @description Returns `true` if the passed function returns true for any item in the enumeration. This corresponds with the `some()` method in JavaScript 1.6.
+     */
+    any(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for any item in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isAny(key: string, value: string): boolean;
+    /**
+     * @description This will combine the values of the enumerator into a single value. It is a useful way to collect a summary value from an enumeration. This corresponds to the `reduce()` method defined in JavaScript 1.8.
+     */
+    reduce(callback: Function, initialValue: {}, reducerProperty: string): {};
+    /**
+     * @description Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
+     */
+    invoke(methodName: string, ...args: any[]): Ember.Array;
+    /**
+     * @description Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
+     */
+    toArray(): Ember.Array;
+    /**
+     * @description Returns a copy of the array with all `null` and `undefined` elements removed.
+     */
+    compact(): Ember.Array;
+    /**
+     * @description Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
+     */
+    without(value: {}): Enumerable;
+    /**
+     * @description Returns a new enumerable that contains only unique values. The default implementation returns an array regardless of the receiver type.
+     */
+    uniq(): Enumerable;
+    /**
+     * @description Converts the enumerable into an array and sorts by the keys specified in the argument.
+     */
+    sortBy(property: string): Ember.Array;
   }
   export class Evented {
     /**
@@ -1389,7 +1667,7 @@ declare namespace Ember {
     /**
      * @description __Required.__ You must implement this method to apply this mixin.
      */
-    replace(idx: number, amt: number, objects: any[]);
+    replace(idx: number, amt: number, objects: Ember.Array);
     /**
      * @description Remove all elements from the array. This is useful if you want to reuse an existing array without having to recreate it.
      */
@@ -1442,6 +1720,166 @@ declare namespace Ember {
      * @description Push the object onto the end of the array if it is not already present in the array.
      */
     addObject(obj: any): Ember.Array;
+    /**
+     * @description __Required.__ You must implement this method to apply this mixin.
+     */
+    length: number;
+    /**
+     * @description Returns the object at the given `index`. If the given `index` is negative or is greater or equal than the array length, returns `undefined`.
+     */
+    objectAt(idx: number): any;
+    /**
+     * @description This returns the objects at the specified indexes, using `objectAt`.
+     */
+    objectsAt(indexes: Ember.Array): Ember.Array;
+    /**
+     * @description This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
+     */
+    '[]': any;
+    /**
+     * @description Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
+     */
+    slice(beginIndex: number, endIndex: number): Ember.Array;
+    /**
+     * @description Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
+     */
+    indexOf(object: {}, startAt: number): number;
+    /**
+     * @description Returns the index of the given object's last occurrence. If no `startAt` argument is given, the search starts from the last position. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
+     */
+    lastIndexOf(object: {}, startAt: number): number;
+    /**
+     * @description Adds an array observer to the receiving array. The array observer object normally must implement two methods:
+     */
+    addArrayObserver(target: {}, opts: {}): Ember.Array;
+    /**
+     * @description Removes an array observer from the object if the observer is current registered. Calling this method multiple times with the same object will have no effect.
+     */
+    removeArrayObserver(target: {}, opts: {}): Ember.Array;
+    /**
+     * @description Becomes true whenever the array currently has observers watching changes on the array.
+     */
+    hasArrayObservers: boolean;
+    /**
+     * @description If you are implementing an object that supports `Ember.Array`, call this method just before the array content changes to notify any observers and invalidate any related properties. Pass the starting index of the change as well as a delta of the amounts to change.
+     */
+    arrayContentWillChange(startIdx: number, removeAmt: number, addAmt: number): Ember.Array;
+    /**
+     * @description If you are implementing an object that supports `Ember.Array`, call this method just after the array content changes to notify any observers and invalidate any related properties. Pass the starting index of the change as well as a delta of the amounts to change.
+     */
+    arrayContentDidChange(startIdx: number, removeAmt: number, addAmt: number): Ember.Array;
+    /**
+     * @description Returns a special object that can be used to observe individual properties on the array. Just get an equivalent property on this object and it will return an enumerable that maps automatically to the named key on the member objects.
+     */
+    '@each': any;
+    /**
+     * @description Helper method returns the first object from a collection. This is usually used by bindings and other parts of the framework to extract a single object if the enumerable contains only one item.
+     */
+    firstObject: any;
+    /**
+     * @description Helper method returns the last object from a collection. If your enumerable contains only one object, this method should always return that object. If your enumerable is empty, this method should return `undefined`.
+     */
+    lastObject: any;
+    /**
+     * @description Returns `true` if the passed object can be found in the receiver. The default version will iterate through the enumerable until the object is found. You may want to override this with a more efficient version.
+     */
+    contains(obj: {}): boolean;
+    /**
+     * @description Iterates through the enumerable, calling the passed function on each item. This method corresponds to the `forEach()` method defined in JavaScript 1.6.
+     */
+    forEach(callback: Function, target: {}): {};
+    /**
+     * @description Alias for `mapBy`
+     */
+    getEach(key: string): Ember.Array;
+    /**
+     * @description Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
+     */
+    setEach(key: string, value: {}): {};
+    /**
+     * @description Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
+     */
+    map(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
+     */
+    mapBy(key: string): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
+     */
+    filter(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
+     */
+    reject(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    filterBy(key: string, value: any): Ember.Array;
+    /**
+     * @description Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
+     */
+    rejectBy(key: string, value: string): Ember.Array;
+    /**
+     * @description Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
+     */
+    find(callback: Function, target: {}): {};
+    /**
+     * @description Returns the first item with a property matching the passed value. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    findBy(key: string, value: string): {};
+    /**
+     * @description Returns `true` if the passed function returns true for every item in the enumeration. This corresponds with the `every()` method in JavaScript 1.6.
+     */
+    every(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for all items in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isEvery(key: string, value: string): boolean;
+    /**
+     * @description Returns `true` if the passed function returns true for any item in the enumeration. This corresponds with the `some()` method in JavaScript 1.6.
+     */
+    any(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for any item in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isAny(key: string, value: string): boolean;
+    /**
+     * @description This will combine the values of the enumerator into a single value. It is a useful way to collect a summary value from an enumeration. This corresponds to the `reduce()` method defined in JavaScript 1.8.
+     */
+    reduce(callback: Function, initialValue: {}, reducerProperty: string): {};
+    /**
+     * @description Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
+     */
+    invoke(methodName: string, ...args: any[]): Ember.Array;
+    /**
+     * @description Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
+     */
+    toArray(): Ember.Array;
+    /**
+     * @description Returns a copy of the array with all `null` and `undefined` elements removed.
+     */
+    compact(): Ember.Array;
+    /**
+     * @description Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
+     */
+    without(value: {}): Enumerable;
+    /**
+     * @description Returns a new enumerable that contains only unique values. The default implementation returns an array regardless of the receiver type.
+     */
+    uniq(): Enumerable;
+    /**
+     * @description Converts the enumerable into an array and sorts by the keys specified in the argument.
+     */
+    sortBy(property: string): Ember.Array;
+    /**
+     * @description Adds each object in the passed enumerable to the receiver.
+     */
+    addObjects(objects: Enumerable): {};
+    /**
+     * @description Removes each object in the passed enumerable from the receiver.
+     */
+    removeObjects(objects: Enumerable): {};
   }
   export class MutableEnumerable implements Enumerable {
     /**
@@ -1460,6 +1898,106 @@ declare namespace Ember {
      * @description Removes each object in the passed enumerable from the receiver.
      */
     removeObjects(objects: Enumerable): {};
+    /**
+     * @description Helper method returns the first object from a collection. This is usually used by bindings and other parts of the framework to extract a single object if the enumerable contains only one item.
+     */
+    firstObject: any;
+    /**
+     * @description Helper method returns the last object from a collection. If your enumerable contains only one object, this method should always return that object. If your enumerable is empty, this method should return `undefined`.
+     */
+    lastObject: any;
+    /**
+     * @description Returns `true` if the passed object can be found in the receiver. The default version will iterate through the enumerable until the object is found. You may want to override this with a more efficient version.
+     */
+    contains(obj: {}): boolean;
+    /**
+     * @description Iterates through the enumerable, calling the passed function on each item. This method corresponds to the `forEach()` method defined in JavaScript 1.6.
+     */
+    forEach(callback: Function, target: {}): {};
+    /**
+     * @description Alias for `mapBy`
+     */
+    getEach(key: string): Ember.Array;
+    /**
+     * @description Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
+     */
+    setEach(key: string, value: {}): {};
+    /**
+     * @description Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
+     */
+    map(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
+     */
+    mapBy(key: string): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
+     */
+    filter(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
+     */
+    reject(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    filterBy(key: string, value: any): Ember.Array;
+    /**
+     * @description Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
+     */
+    rejectBy(key: string, value: string): Ember.Array;
+    /**
+     * @description Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
+     */
+    find(callback: Function, target: {}): {};
+    /**
+     * @description Returns the first item with a property matching the passed value. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    findBy(key: string, value: string): {};
+    /**
+     * @description Returns `true` if the passed function returns true for every item in the enumeration. This corresponds with the `every()` method in JavaScript 1.6.
+     */
+    every(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for all items in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isEvery(key: string, value: string): boolean;
+    /**
+     * @description Returns `true` if the passed function returns true for any item in the enumeration. This corresponds with the `some()` method in JavaScript 1.6.
+     */
+    any(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for any item in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isAny(key: string, value: string): boolean;
+    /**
+     * @description This will combine the values of the enumerator into a single value. It is a useful way to collect a summary value from an enumeration. This corresponds to the `reduce()` method defined in JavaScript 1.8.
+     */
+    reduce(callback: Function, initialValue: {}, reducerProperty: string): {};
+    /**
+     * @description Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
+     */
+    invoke(methodName: string, ...args: any[]): Ember.Array;
+    /**
+     * @description Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
+     */
+    toArray(): Ember.Array;
+    /**
+     * @description Returns a copy of the array with all `null` and `undefined` elements removed.
+     */
+    compact(): Ember.Array;
+    /**
+     * @description Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
+     */
+    without(value: {}): Enumerable;
+    /**
+     * @description Returns a new enumerable that contains only unique values. The default implementation returns an array regardless of the receiver type.
+     */
+    uniq(): Enumerable;
+    /**
+     * @description Converts the enumerable into an array and sorts by the keys specified in the argument.
+     */
+    sortBy(property: string): Ember.Array;
   }
   export class Observable {
     /**
@@ -1539,19 +2077,235 @@ declare namespace Ember {
     /**
      * @description An alias to the proxied promise's `then`.
      */
-    then(callback: Function): RSVP.Promise;
+    then(callback: Function): RSVP.Promise<any>;
     /**
      * @description An alias to the proxied promise's `catch`.
      */
-    catch(callback: Function): RSVP.Promise;
+    catch(callback: Function): RSVP.Promise<any>;
     /**
      * @description An alias to the proxied promise's `finally`.
      */
-    finally(callback: Function): RSVP.Promise;
+    finally(callback: Function): RSVP.Promise<any>;
   }
   export class TargetActionSupport extends Mixin {
   }
   export class ArrayProxy extends Object implements MutableArray {
+    /**
+     * @description __Required.__ You must implement this method to apply this mixin.
+     */
+    replace(idx: number, amt: number, objects: Ember.Array);
+    /**
+     * @description Remove all elements from the array. This is useful if you want to reuse an existing array without having to recreate it.
+     */
+    clear(): Ember.Array;
+    /**
+     * @description This will use the primitive `replace()` method to insert an object at the specified index.
+     */
+    insertAt(idx: number, object: {}): Ember.Array;
+    /**
+     * @description Remove an object at the specified index using the `replace()` primitive method. You can pass either a single index, or a start and a length.
+     */
+    removeAt(start: number, len: number): Ember.Array;
+    /**
+     * @description Push the object onto the end of the array. Works just like `push()` but it is KVO-compliant.
+     */
+    pushObject(obj: any): void;
+    /**
+     * @description Add the objects in the passed numerable to the end of the array. Defers notifying observers of the change until all objects are added.
+     */
+    pushObjects(objects: Enumerable): Ember.Array;
+    /**
+     * @description Pop object from array or nil if none are left. Works just like `pop()` but it is KVO-compliant.
+     */
+    popObject(): void;
+    /**
+     * @description Shift an object from start of array or nil if none are left. Works just like `shift()` but it is KVO-compliant.
+     */
+    shiftObject(): void;
+    /**
+     * @description Unshift an object to start of array. Works just like `unshift()` but it is KVO-compliant.
+     */
+    unshiftObject(obj: any): void;
+    /**
+     * @description Adds the named objects to the beginning of the array. Defers notifying observers until all objects have been added.
+     */
+    unshiftObjects(objects: Enumerable): Ember.Array;
+    /**
+     * @description Reverse objects in the array. Works just like `reverse()` but it is KVO-compliant.
+     */
+    reverseObjects(): Ember.Array;
+    /**
+     * @description Replace all the receiver's content with content of the argument. If argument is an empty array receiver will be cleared.
+     */
+    setObjects(objects: Ember.Array): Ember.Array;
+    /**
+     * @description Remove all occurrences of an object in the array.
+     */
+    removeObject(obj: any): Ember.Array;
+    /**
+     * @description Push the object onto the end of the array if it is not already present in the array.
+     */
+    addObject(obj: any): Ember.Array;
+    /**
+     * @description __Required.__ You must implement this method to apply this mixin.
+     */
+    length: number;
+    /**
+     * @description Returns the object at the given `index`. If the given `index` is negative or is greater or equal than the array length, returns `undefined`.
+     */
+    objectAt(idx: number): any;
+    /**
+     * @description This returns the objects at the specified indexes, using `objectAt`.
+     */
+    objectsAt(indexes: Ember.Array): Ember.Array;
+    /**
+     * @description This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
+     */
+    '[]': any;
+    /**
+     * @description Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
+     */
+    slice(beginIndex: number, endIndex: number): Ember.Array;
+    /**
+     * @description Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
+     */
+    indexOf(object: {}, startAt: number): number;
+    /**
+     * @description Returns the index of the given object's last occurrence. If no `startAt` argument is given, the search starts from the last position. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
+     */
+    lastIndexOf(object: {}, startAt: number): number;
+    /**
+     * @description Adds an array observer to the receiving array. The array observer object normally must implement two methods:
+     */
+    addArrayObserver(target: {}, opts: {}): Ember.Array;
+    /**
+     * @description Removes an array observer from the object if the observer is current registered. Calling this method multiple times with the same object will have no effect.
+     */
+    removeArrayObserver(target: {}, opts: {}): Ember.Array;
+    /**
+     * @description Becomes true whenever the array currently has observers watching changes on the array.
+     */
+    hasArrayObservers: boolean;
+    /**
+     * @description If you are implementing an object that supports `Ember.Array`, call this method just before the array content changes to notify any observers and invalidate any related properties. Pass the starting index of the change as well as a delta of the amounts to change.
+     */
+    arrayContentWillChange(startIdx: number, removeAmt: number, addAmt: number): Ember.Array;
+    /**
+     * @description If you are implementing an object that supports `Ember.Array`, call this method just after the array content changes to notify any observers and invalidate any related properties. Pass the starting index of the change as well as a delta of the amounts to change.
+     */
+    arrayContentDidChange(startIdx: number, removeAmt: number, addAmt: number): Ember.Array;
+    /**
+     * @description Returns a special object that can be used to observe individual properties on the array. Just get an equivalent property on this object and it will return an enumerable that maps automatically to the named key on the member objects.
+     */
+    '@each': any;
+    /**
+     * @description Helper method returns the first object from a collection. This is usually used by bindings and other parts of the framework to extract a single object if the enumerable contains only one item.
+     */
+    firstObject: any;
+    /**
+     * @description Helper method returns the last object from a collection. If your enumerable contains only one object, this method should always return that object. If your enumerable is empty, this method should return `undefined`.
+     */
+    lastObject: any;
+    /**
+     * @description Returns `true` if the passed object can be found in the receiver. The default version will iterate through the enumerable until the object is found. You may want to override this with a more efficient version.
+     */
+    contains(obj: {}): boolean;
+    /**
+     * @description Iterates through the enumerable, calling the passed function on each item. This method corresponds to the `forEach()` method defined in JavaScript 1.6.
+     */
+    forEach(callback: Function, target: {}): {};
+    /**
+     * @description Alias for `mapBy`
+     */
+    getEach(key: string): Ember.Array;
+    /**
+     * @description Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
+     */
+    setEach(key: string, value: {}): {};
+    /**
+     * @description Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
+     */
+    map(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
+     */
+    mapBy(key: string): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
+     */
+    filter(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
+     */
+    reject(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    filterBy(key: string, value: any): Ember.Array;
+    /**
+     * @description Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
+     */
+    rejectBy(key: string, value: string): Ember.Array;
+    /**
+     * @description Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
+     */
+    find(callback: Function, target: {}): {};
+    /**
+     * @description Returns the first item with a property matching the passed value. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    findBy(key: string, value: string): {};
+    /**
+     * @description Returns `true` if the passed function returns true for every item in the enumeration. This corresponds with the `every()` method in JavaScript 1.6.
+     */
+    every(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for all items in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isEvery(key: string, value: string): boolean;
+    /**
+     * @description Returns `true` if the passed function returns true for any item in the enumeration. This corresponds with the `some()` method in JavaScript 1.6.
+     */
+    any(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for any item in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isAny(key: string, value: string): boolean;
+    /**
+     * @description This will combine the values of the enumerator into a single value. It is a useful way to collect a summary value from an enumeration. This corresponds to the `reduce()` method defined in JavaScript 1.8.
+     */
+    reduce(callback: Function, initialValue: {}, reducerProperty: string): {};
+    /**
+     * @description Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
+     */
+    invoke(methodName: string, ...args: any[]): Ember.Array;
+    /**
+     * @description Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
+     */
+    toArray(): Ember.Array;
+    /**
+     * @description Returns a copy of the array with all `null` and `undefined` elements removed.
+     */
+    compact(): Ember.Array;
+    /**
+     * @description Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
+     */
+    without(value: {}): Enumerable;
+    /**
+     * @description Returns a new enumerable that contains only unique values. The default implementation returns an array regardless of the receiver type.
+     */
+    uniq(): Enumerable;
+    /**
+     * @description Converts the enumerable into an array and sorts by the keys specified in the argument.
+     */
+    sortBy(property: string): Ember.Array;
+    /**
+     * @description Adds each object in the passed enumerable to the receiver.
+     */
+    addObjects(objects: Enumerable): {};
+    /**
+     * @description Removes each object in the passed enumerable from the receiver.
+     */
+    removeObjects(objects: Enumerable): {};
   }
   export class CoreObject {
     /**
@@ -1561,11 +2315,11 @@ declare namespace Ember {
     /**
      * @description Defines the properties that will be concatenated from the superclass (instead of overridden).
      */
-    concatenatedProperties: any[];
+    concatenatedProperties: Ember.Array;
     /**
      * @description Defines the properties that will be merged from the superclass (instead of overridden).
      */
-    mergedProperties: any[];
+    mergedProperties: Ember.Array;
     /**
      * @description Destroyed object property flag.
      */
@@ -1608,8 +2362,320 @@ declare namespace Ember {
   export class Namespace extends Object {
   }
   export class NativeArray implements MutableArray, Observable, Copyable {
+    /**
+     * @description __Required.__ You must implement this method to apply this mixin.
+     */
+    replace(idx: number, amt: number, objects: Ember.Array);
+    /**
+     * @description Remove all elements from the array. This is useful if you want to reuse an existing array without having to recreate it.
+     */
+    clear(): Ember.Array;
+    /**
+     * @description This will use the primitive `replace()` method to insert an object at the specified index.
+     */
+    insertAt(idx: number, object: {}): Ember.Array;
+    /**
+     * @description Remove an object at the specified index using the `replace()` primitive method. You can pass either a single index, or a start and a length.
+     */
+    removeAt(start: number, len: number): Ember.Array;
+    /**
+     * @description Push the object onto the end of the array. Works just like `push()` but it is KVO-compliant.
+     */
+    pushObject(obj: any): void;
+    /**
+     * @description Add the objects in the passed numerable to the end of the array. Defers notifying observers of the change until all objects are added.
+     */
+    pushObjects(objects: Enumerable): Ember.Array;
+    /**
+     * @description Pop object from array or nil if none are left. Works just like `pop()` but it is KVO-compliant.
+     */
+    popObject(): void;
+    /**
+     * @description Shift an object from start of array or nil if none are left. Works just like `shift()` but it is KVO-compliant.
+     */
+    shiftObject(): void;
+    /**
+     * @description Unshift an object to start of array. Works just like `unshift()` but it is KVO-compliant.
+     */
+    unshiftObject(obj: any): void;
+    /**
+     * @description Adds the named objects to the beginning of the array. Defers notifying observers until all objects have been added.
+     */
+    unshiftObjects(objects: Enumerable): Ember.Array;
+    /**
+     * @description Reverse objects in the array. Works just like `reverse()` but it is KVO-compliant.
+     */
+    reverseObjects(): Ember.Array;
+    /**
+     * @description Replace all the receiver's content with content of the argument. If argument is an empty array receiver will be cleared.
+     */
+    setObjects(objects: Ember.Array): Ember.Array;
+    /**
+     * @description Remove all occurrences of an object in the array.
+     */
+    removeObject(obj: any): Ember.Array;
+    /**
+     * @description Push the object onto the end of the array if it is not already present in the array.
+     */
+    addObject(obj: any): Ember.Array;
+    /**
+     * @description __Required.__ You must implement this method to apply this mixin.
+     */
+    length: number;
+    /**
+     * @description Returns the object at the given `index`. If the given `index` is negative or is greater or equal than the array length, returns `undefined`.
+     */
+    objectAt(idx: number): any;
+    /**
+     * @description This returns the objects at the specified indexes, using `objectAt`.
+     */
+    objectsAt(indexes: Ember.Array): Ember.Array;
+    /**
+     * @description This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
+     */
+    '[]': any;
+    /**
+     * @description Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
+     */
+    slice(beginIndex: number, endIndex: number): Ember.Array;
+    /**
+     * @description Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
+     */
+    indexOf(object: {}, startAt: number): number;
+    /**
+     * @description Returns the index of the given object's last occurrence. If no `startAt` argument is given, the search starts from the last position. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
+     */
+    lastIndexOf(object: {}, startAt: number): number;
+    /**
+     * @description Adds an array observer to the receiving array. The array observer object normally must implement two methods:
+     */
+    addArrayObserver(target: {}, opts: {}): Ember.Array;
+    /**
+     * @description Removes an array observer from the object if the observer is current registered. Calling this method multiple times with the same object will have no effect.
+     */
+    removeArrayObserver(target: {}, opts: {}): Ember.Array;
+    /**
+     * @description Becomes true whenever the array currently has observers watching changes on the array.
+     */
+    hasArrayObservers: boolean;
+    /**
+     * @description If you are implementing an object that supports `Ember.Array`, call this method just before the array content changes to notify any observers and invalidate any related properties. Pass the starting index of the change as well as a delta of the amounts to change.
+     */
+    arrayContentWillChange(startIdx: number, removeAmt: number, addAmt: number): Ember.Array;
+    /**
+     * @description If you are implementing an object that supports `Ember.Array`, call this method just after the array content changes to notify any observers and invalidate any related properties. Pass the starting index of the change as well as a delta of the amounts to change.
+     */
+    arrayContentDidChange(startIdx: number, removeAmt: number, addAmt: number): Ember.Array;
+    /**
+     * @description Returns a special object that can be used to observe individual properties on the array. Just get an equivalent property on this object and it will return an enumerable that maps automatically to the named key on the member objects.
+     */
+    '@each': any;
+    /**
+     * @description Helper method returns the first object from a collection. This is usually used by bindings and other parts of the framework to extract a single object if the enumerable contains only one item.
+     */
+    firstObject: any;
+    /**
+     * @description Helper method returns the last object from a collection. If your enumerable contains only one object, this method should always return that object. If your enumerable is empty, this method should return `undefined`.
+     */
+    lastObject: any;
+    /**
+     * @description Returns `true` if the passed object can be found in the receiver. The default version will iterate through the enumerable until the object is found. You may want to override this with a more efficient version.
+     */
+    contains(obj: {}): boolean;
+    /**
+     * @description Iterates through the enumerable, calling the passed function on each item. This method corresponds to the `forEach()` method defined in JavaScript 1.6.
+     */
+    forEach(callback: Function, target: {}): {};
+    /**
+     * @description Alias for `mapBy`
+     */
+    getEach(key: string): Ember.Array;
+    /**
+     * @description Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
+     */
+    setEach(key: string, value: {}): {};
+    /**
+     * @description Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
+     */
+    map(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
+     */
+    mapBy(key: string): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
+     */
+    filter(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
+     */
+    reject(callback: Function, target: {}): Ember.Array;
+    /**
+     * @description Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    filterBy(key: string, value: any): Ember.Array;
+    /**
+     * @description Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
+     */
+    rejectBy(key: string, value: string): Ember.Array;
+    /**
+     * @description Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
+     */
+    find(callback: Function, target: {}): {};
+    /**
+     * @description Returns the first item with a property matching the passed value. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
+     */
+    findBy(key: string, value: string): {};
+    /**
+     * @description Returns `true` if the passed function returns true for every item in the enumeration. This corresponds with the `every()` method in JavaScript 1.6.
+     */
+    every(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for all items in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isEvery(key: string, value: string): boolean;
+    /**
+     * @description Returns `true` if the passed function returns true for any item in the enumeration. This corresponds with the `some()` method in JavaScript 1.6.
+     */
+    any(callback: Function, target: {}): boolean;
+    /**
+     * @description Returns `true` if the passed property resolves to the value of the second argument for any item in the enumerable. This method is often simpler/faster than using a callback.
+     */
+    isAny(key: string, value: string): boolean;
+    /**
+     * @description This will combine the values of the enumerator into a single value. It is a useful way to collect a summary value from an enumeration. This corresponds to the `reduce()` method defined in JavaScript 1.8.
+     */
+    reduce(callback: Function, initialValue: {}, reducerProperty: string): {};
+    /**
+     * @description Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
+     */
+    invoke(methodName: string, ...args: any[]): Ember.Array;
+    /**
+     * @description Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
+     */
+    toArray(): Ember.Array;
+    /**
+     * @description Returns a copy of the array with all `null` and `undefined` elements removed.
+     */
+    compact(): Ember.Array;
+    /**
+     * @description Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
+     */
+    without(value: {}): Enumerable;
+    /**
+     * @description Returns a new enumerable that contains only unique values. The default implementation returns an array regardless of the receiver type.
+     */
+    uniq(): Enumerable;
+    /**
+     * @description Converts the enumerable into an array and sorts by the keys specified in the argument.
+     */
+    sortBy(property: string): Ember.Array;
+    /**
+     * @description Adds each object in the passed enumerable to the receiver.
+     */
+    addObjects(objects: Enumerable): {};
+    /**
+     * @description Removes each object in the passed enumerable from the receiver.
+     */
+    removeObjects(objects: Enumerable): {};
+    /**
+     * @description Retrieves the value of a property from the object.
+     */
+    get(keyName: string): {};
+    /**
+     * @description To get the values of multiple properties at once, call `getProperties` with a list of strings or an array:
+     */
+    getProperties(...list: string[]): {};
+    /**
+     * @description Sets the provided key or path to the value.
+     */
+    set(keyName: string, value: {}): {};
+    /**
+     * @description Sets a list of properties at once. These properties are set inside a single `beginPropertyChanges` and `endPropertyChanges` batch, so observers will be buffered.
+     */
+    setProperties(hash: {}): {};
+    /**
+     * @description Convenience method to call `propertyWillChange` and `propertyDidChange` in succession.
+     */
+    notifyPropertyChange(keyName: string): Observable;
+    /**
+     * @description Adds an observer on a property.
+     */
+    addObserver(key: string, target: {}, method: string|Function);
+    /**
+     * @description Remove an observer you have previously registered on this object. Pass the same key, target, and method you passed to `addObserver()` and your target will no longer receive notifications.
+     */
+    removeObserver(key: string, target: {}, method: string|Function);
+    /**
+     * @description Retrieves the value of a property, or a default value in the case that the property returns `undefined`.
+     */
+    getWithDefault(keyName: string, defaultValue: {}): {};
+    /**
+     * @description Set the value of a property to the current value plus some amount.
+     */
+    incrementProperty(keyName: string, increment: number): number;
+    /**
+     * @description Set the value of a property to the current value minus some amount.
+     */
+    decrementProperty(keyName: string, decrement: number): number;
+    /**
+     * @description Set the value of a boolean property to the opposite of its current value.
+     */
+    toggleProperty(keyName: string): boolean;
+    /**
+     * @description Returns the cached value of a computed property, if it exists. This allows you to inspect the value of a computed property without accidentally invoking it if it is intended to be generated lazily.
+     */
+    cacheFor(keyName: string): {};
   }
   export class Object extends CoreObject implements Observable {
+    /**
+     * @description Retrieves the value of a property from the object.
+     */
+    get(keyName: string): {};
+    /**
+     * @description To get the values of multiple properties at once, call `getProperties` with a list of strings or an array:
+     */
+    getProperties(...list: string[]): {};
+    /**
+     * @description Sets the provided key or path to the value.
+     */
+    set(keyName: string, value: {}): {};
+    /**
+     * @description Sets a list of properties at once. These properties are set inside a single `beginPropertyChanges` and `endPropertyChanges` batch, so observers will be buffered.
+     */
+    setProperties(hash: {}): {};
+    /**
+     * @description Convenience method to call `propertyWillChange` and `propertyDidChange` in succession.
+     */
+    notifyPropertyChange(keyName: string): Observable;
+    /**
+     * @description Adds an observer on a property.
+     */
+    addObserver(key: string, target: {}, method: string|Function);
+    /**
+     * @description Remove an observer you have previously registered on this object. Pass the same key, target, and method you passed to `addObserver()` and your target will no longer receive notifications.
+     */
+    removeObserver(key: string, target: {}, method: string|Function);
+    /**
+     * @description Retrieves the value of a property, or a default value in the case that the property returns `undefined`.
+     */
+    getWithDefault(keyName: string, defaultValue: {}): {};
+    /**
+     * @description Set the value of a property to the current value plus some amount.
+     */
+    incrementProperty(keyName: string, increment: number): number;
+    /**
+     * @description Set the value of a property to the current value minus some amount.
+     */
+    decrementProperty(keyName: string, decrement: number): number;
+    /**
+     * @description Set the value of a boolean property to the opposite of its current value.
+     */
+    toggleProperty(keyName: string): boolean;
+    /**
+     * @description Returns the cached value of a computed property, if it exists. This allows you to inspect the value of a computed property without accidentally invoking it if it is intended to be generated lazily.
+     */
+    cacheFor(keyName: string): {};
   }
   export class ObjectProxy {
   }
@@ -1647,11 +2713,11 @@ declare namespace Ember {
     /**
      * @description Standard CSS class names to apply to the view's outer element. This property automatically inherits any class names defined by the view's superclasses as well.
      */
-    classNames: any[];
+    classNames: Ember.Array;
     /**
      * @description A list of properties of the view to apply as class names. If the property is a string value, the value of that string will be applied as a class name.
      */
-    classNameBindings: any[];
+    classNameBindings: Ember.Array;
   }
   export class EmptyViewSupport {
   }
@@ -1708,6 +2774,41 @@ declare namespace Ember {
   export class ContainerView extends View {
   }
   export class CoreView extends Object implements Evented, ActionHandler {
+    /**
+     * @description Override the default event firing from `Ember.Evented` to also call methods with the given name.
+     * @deprecated Use `Ember.View` instead.
+     */
+    trigger(name: string);
+    /**
+     * @description Subscribes to a named event with given function.
+     * @deprecated Use `Ember.View` instead.
+     */
+    on(name: string, target: {}, method: Function): void;
+    /**
+     * @description Subscribes a function to a named event and then cancels the subscription after the first time the event is triggered. It is good to use ``one`` when you only care about the first time an event has taken place.
+     * @deprecated Use `Ember.View` instead.
+     */
+    one(name: string, target: {}, method: Function): void;
+    /**
+     * @description Cancels subscription for given name, target, and method.
+     * @deprecated Use `Ember.View` instead.
+     */
+    off(name: string, target: {}, method: Function): void;
+    /**
+     * @description Checks to see if object has any subscriptions for named event.
+     * @deprecated Use `Ember.View` instead.
+     */
+    has(name: string): boolean;
+    /**
+     * @description The collection of functions, keyed by name, available on this `ActionHandler` as action targets.
+     * @deprecated Use `Ember.View` instead.
+     */
+    actions: {};
+    /**
+     * @description Triggers a named action on the `ActionHandler`. Any parameters supplied after the `actionName` string will be passed as arguments to the action target function.
+     * @deprecated Use `Ember.View` instead.
+     */
+    send(actionName: string, context: any);
   }
   export class Select extends View {
     /**
@@ -1729,7 +2830,7 @@ declare namespace Ember {
      * @description The list of options.
      * @deprecated See http://emberjs.com/deprecations/v1.x/#toc_ember-select
      */
-    content: any[];
+    content: Ember.Array;
     /**
      * @description When `multiple` is `false`, the element of `content` that is currently selected, if any.
      * @deprecated See http://emberjs.com/deprecations/v1.x/#toc_ember-select
@@ -1794,7 +2895,32 @@ declare namespace Ember {
      */
     max: string;
   }
-  export class View extends CoreView implements ViewContextSupport, ViewChildViewsSupport, TemplateRenderingSupport, ClassNamesSupport, AttributeBindingsSupport, LegacyViewSupport, InstrumentationSupport, VisibilitySupport, AriaRoleSupport {
+  export class View extends CoreView implements TemplateRenderingSupport, ClassNamesSupport, LegacyViewSupport, InstrumentationSupport, VisibilitySupport, AriaRoleSupport {
+    /**
+     * @description Standard CSS class names to apply to the view's outer element. This property automatically inherits any class names defined by the view's superclasses as well.
+     * @deprecated See http://emberjs.com/deprecations/v1.x/#toc_ember-view
+     */
+    classNames: Ember.Array;
+    /**
+     * @description A list of properties of the view to apply as class names. If the property is a string value, the value of that string will be applied as a class name.
+     * @deprecated See http://emberjs.com/deprecations/v1.x/#toc_ember-view
+     */
+    classNameBindings: Ember.Array;
+    /**
+     * @description Used to identify this view during debugging
+     * @deprecated See http://emberjs.com/deprecations/v1.x/#toc_ember-view
+     */
+    instrumentDisplay: string;
+    /**
+     * @description If `false`, the view will appear hidden in DOM.
+     * @deprecated See http://emberjs.com/deprecations/v1.x/#toc_ember-view
+     */
+    isVisible: boolean;
+    /**
+     * @description The WAI-ARIA role of the control represented by this view. For example, a button may have a role of type 'button', or a pane may have a role of type 'alertdialog'. This property is used by assistive software to help visually challenged users navigate rich web applications.
+     * @deprecated See http://emberjs.com/deprecations/v1.x/#toc_ember-view
+     */
+    ariaRole: string;
   }
 }
 declare class Backburner {
