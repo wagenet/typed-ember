@@ -120,6 +120,7 @@ class Klass {
     // REVIEW: Is it correct to treat prototype extensions as an interface?
     this.type = this.builtIn ? 'interface' : 'class';
     this.private = data.access === 'private';
+    this.description = data.description;
     this.deprecated = data.deprecated;
     this.deprecationMessage = data.deprecationMessage;
 
@@ -210,6 +211,23 @@ class Klass {
           });
         }
       });
+    }
+  }
+
+   get docs() {
+    let lines = [];
+
+    if (this.deprecated) {
+      lines.push(`DEPRECATED: ${this.deprecationMessage || ''}`)
+    }
+
+    if (this.description) {
+      lines.push(abbreviateDescription(this.description));
+    }
+
+    if (lines.length > 0) {
+      let str = `/**\n${lines.map(l => ` * ${l}`).join('\n')}\n */`;
+      return str;
     }
   }
 
@@ -312,18 +330,18 @@ class ClassItem {
     }
   }
 
-  get jsDoc() {
+  get docs() {
     let lines = [];
 
-    if (this.description) {
-      lines.push(`@description ${abbreviateDescription(this.description)}`);
-    }
-
     if (this.deprecated) {
-      lines.push(`@deprecated ${this.deprecationMessage || ''}`);
+      lines.push(`DEPRECATED: ${this.deprecationMessage || ''}`)
     } else if (this.klass.deprecated) {
       console.warn(`Parent deprecated but item isn't; parent=${this.klass.fullName}, method=${this.name}`);
-      lines.push(`@deprecated ${this.klass.deprecationMessage || ''}`);
+      lines.push(`DEPRECATED: ${this.klass.deprecationMessage || ''}`);
+    }
+
+    if (this.description) {
+      lines.push(abbreviateDescription(this.description));
     }
 
     if (lines.length > 0) {
@@ -467,8 +485,8 @@ function prefixLines(str, prefix) {
 function writeItems(wstream, klass, prefix) {
   klass.items.forEach(item => {
     if (item.private) { return; }
-    if (item.jsDoc) {
-      wstream.write(prefixLines(item.jsDoc, prefix)+'\n');
+    if (item.docs) {
+      wstream.write(prefixLines(item.docs, prefix)+'\n');
     }
     item.declarations.forEach(d => {
       wstream.write(`${prefix}${d};\n`);
@@ -498,6 +516,9 @@ function writeNamespace(wstream, namespace, prefix) {
   namespace.classes.forEach(klass => {
     if (klass.isNamespace && !klass.isTrueClass) { return; }
     let declareExport = (childPrefix === '') ? 'declare' : 'export';
+    if (klass.docs) {
+      wstream.write(prefixLines(klass.docs, childPrefix)+'\n');
+    }
     wstream.write(`${childPrefix}${declareExport} ${klass.declaration} {\n`);
     writeItems(wstream, klass, childPrefix+'  ');
     wstream.write(`${childPrefix}}\n`);
