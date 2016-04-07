@@ -55,9 +55,16 @@ class Namespace {
 Namespace.root = new Namespace('ember');
 
 
+const NAMESPACE_MAP = {
+  'RSVP': 'Ember.RSVP'
+};
+
 function namespaceAndKlassName(fullName) {
   let parts = fullName.split('.');
+
   let namespaceName = parts.slice(0,-1).join('.');
+  namespaceName = NAMESPACE_MAP[namespaceName] || namespaceName;
+
   let klassName = parts[parts.length-1];
 
   return [namespaceName, klassName];

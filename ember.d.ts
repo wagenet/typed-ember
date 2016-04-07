@@ -7,72 +7,6 @@ declare class JQuery {}
 
 
 declare module 'ember' {
-  export namespace RSVP {
-    /**
-     * @description This is a convenient alias for `RSVP.Promise.all`.
-     */
-    function all(array: any[], label: string);
-    /**
-     * @description This is a convenient alias for `RSVP.Promise.race`.
-     */
-    function race(array: any[], label: string);
-    /**
-     * @description This is a convenient alias for `RSVP.Promise.reject`.
-     */
-    function reject(reason: any, label: string): RSVP.Promise<any>;
-    /**
-     * @description This is a convenient alias for `RSVP.Promise.resolve`.
-     */
-    function resolve(value: any, label: string): RSVP.Promise<any>;
-    /**
-     * @description `RSVP.allSettled` is similar to `RSVP.all`, but instead of implementing a fail-fast method, it waits until all the promises have returned and shows you all the results. This is useful if you want to handle multiple promises' failure states together as a set.
-     */
-    function allSettled(entries: any[], label: string): RSVP.Promise<any>;
-    /**
-     * @description `RSVP.defer` returns an object similar to jQuery's `$.Deferred`. `RSVP.defer` should be used when porting over code reliant on `$.Deferred`'s interface. New code should use the `RSVP.Promise` constructor instead.
-     */
-    function defer(label: string): {};
-    /**
-     * @description `RSVP.filter` is similar to JavaScript's native `filter` method, except that it waits for all promises to become fulfilled before running the `filterFn` on each item in given to `promises`. `RSVP.filter` returns a promise that will become fulfilled with the result of running `filterFn` on the values the promises become fulfilled with.
-     */
-    function filter(promises: any[], filterFn: Function, label: string): RSVP.Promise<any>;
-    /**
-     * @description `RSVP.hashSettled` is similar to `RSVP.allSettled`, but takes an object instead of an array for its `promises` argument.
-     */
-    function hashSettled(object: {}, label: string): RSVP.Promise<any>;
-    /**
-     * @description `RSVP.hash` is similar to `RSVP.all`, but takes an object instead of an array for its `promises` argument.
-     */
-    function hash(object: {}, label: string): RSVP.Promise<any>;
-    /**
-     * @description `RSVP.map` is similar to JavaScript's native `map` method, except that it waits for all promises to become fulfilled before running the `mapFn` on each item in given to `promises`. `RSVP.map` returns a promise that will become fulfilled with the result of running `mapFn` on the values the promises become fulfilled with.
-     */
-    function map(promises: any[], mapFn: Function, label: string): RSVP.Promise<any>;
-    /**
-     * @description `RSVP.denodeify` takes a 'node-style' function and returns a function that will return an `RSVP.Promise`. You can use `denodeify` in Node.js or the browser when you'd prefer to use promises over using callbacks. For example, `denodeify` transforms the following:
-     */
-    function denodeify(nodeFunc: Function, options: boolean|any[]): Function;
-    /**
-     * @description `RSVP.rethrow` will rethrow an error on the next turn of the JavaScript event loop in order to aid debugging.
-     */
-    function rethrow(reason: Error);
-    export class EventTarget {
-    }
-    export class Promise<T> implements Promise<T> {
-      /**
-       * @description The primary way of interacting with a promise is through its `then` method, which registers callbacks to receive either a promise's eventual value or the reason why the promise cannot be fulfilled.
-       */
-      then(onFulfillment: Function, onRejection: Function, label: string): RSVP.Promise<any>;
-      /**
-       * @description `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same as the catch block of a try/catch statement.
-       */
-      catch(onRejection: Function, label: string): RSVP.Promise<any>;
-      /**
-       * @description `finally` will be invoked regardless of the promise's fate just as native try/catch/finally behaves
-       */
-      finally(callback: Function, label: string): RSVP.Promise<any>;
-    }
-  }
   export namespace Ember {
     /**
      * @description Display a deprecation warning with the provided message and a stack trace (Chrome and Firefox only). Ember build tools will remove any calls to `Ember.deprecate()` when doing a production build.
@@ -240,6 +174,24 @@ declare module 'ember' {
      * @description Alias for jQuery
      */
     function $();
+    export namespace RSVP {
+      export class EventTarget {
+      }
+      export class Promise<T> implements Promise<T> {
+        /**
+         * @description The primary way of interacting with a promise is through its `then` method, which registers callbacks to receive either a promise's eventual value or the reason why the promise cannot be fulfilled.
+         */
+        then(onFulfillment: Function, onRejection: Function, label: string): RSVP.Promise<any>;
+        /**
+         * @description `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same as the catch block of a try/catch statement.
+         */
+        catch(onRejection: Function, label: string): RSVP.Promise<any>;
+        /**
+         * @description `finally` will be invoked regardless of the promise's fate just as native try/catch/finally behaves
+         */
+        finally(callback: Function, label: string): RSVP.Promise<any>;
+      }
+    }
     export namespace ApplicationInstance {
       export class BootOptions {
         /**
@@ -2929,6 +2881,56 @@ declare module 'ember' {
        */
       ariaRole: string;
     }
+  }
+  export class RSVP {
+    /**
+     * @description This is a convenient alias for `RSVP.Promise.all`.
+     */
+    static all(array: any[], label: string);
+    /**
+     * @description This is a convenient alias for `RSVP.Promise.race`.
+     */
+    static race(array: any[], label: string);
+    /**
+     * @description This is a convenient alias for `RSVP.Promise.reject`.
+     */
+    static reject(reason: any, label: string): RSVP.Promise<any>;
+    /**
+     * @description This is a convenient alias for `RSVP.Promise.resolve`.
+     */
+    static resolve(value: any, label: string): RSVP.Promise<any>;
+    /**
+     * @description `RSVP.allSettled` is similar to `RSVP.all`, but instead of implementing a fail-fast method, it waits until all the promises have returned and shows you all the results. This is useful if you want to handle multiple promises' failure states together as a set.
+     */
+    static allSettled(entries: any[], label: string): RSVP.Promise<any>;
+    /**
+     * @description `RSVP.defer` returns an object similar to jQuery's `$.Deferred`. `RSVP.defer` should be used when porting over code reliant on `$.Deferred`'s interface. New code should use the `RSVP.Promise` constructor instead.
+     */
+    static defer(label: string): {};
+    /**
+     * @description `RSVP.filter` is similar to JavaScript's native `filter` method, except that it waits for all promises to become fulfilled before running the `filterFn` on each item in given to `promises`. `RSVP.filter` returns a promise that will become fulfilled with the result of running `filterFn` on the values the promises become fulfilled with.
+     */
+    static filter(promises: any[], filterFn: Function, label: string): RSVP.Promise<any>;
+    /**
+     * @description `RSVP.hashSettled` is similar to `RSVP.allSettled`, but takes an object instead of an array for its `promises` argument.
+     */
+    static hashSettled(object: {}, label: string): RSVP.Promise<any>;
+    /**
+     * @description `RSVP.hash` is similar to `RSVP.all`, but takes an object instead of an array for its `promises` argument.
+     */
+    static hash(object: {}, label: string): RSVP.Promise<any>;
+    /**
+     * @description `RSVP.map` is similar to JavaScript's native `map` method, except that it waits for all promises to become fulfilled before running the `mapFn` on each item in given to `promises`. `RSVP.map` returns a promise that will become fulfilled with the result of running `mapFn` on the values the promises become fulfilled with.
+     */
+    static map(promises: any[], mapFn: Function, label: string): RSVP.Promise<any>;
+    /**
+     * @description `RSVP.denodeify` takes a 'node-style' function and returns a function that will return an `RSVP.Promise`. You can use `denodeify` in Node.js or the browser when you'd prefer to use promises over using callbacks. For example, `denodeify` transforms the following:
+     */
+    static denodeify(nodeFunc: Function, options: boolean|any[]): Function;
+    /**
+     * @description `RSVP.rethrow` will rethrow an error on the next turn of the JavaScript event loop in order to aid debugging.
+     */
+    static rethrow(reason: Error);
   }
   export class Backburner {
   }
