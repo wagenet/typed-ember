@@ -7,10 +7,12 @@ const NAMESPACES = new Map();
 
 class Namespace {
   constructor(name, parent) {
-    if (name) {
-      this.name = name;
-    } else {
-      this.root = true;
+    this.name = name;
+
+    // Bit of a hack
+    if (name === 'ember') {
+      this.module = true;
+      this.defaultExport = 'Ember';
     }
 
     this.parent = parent;
@@ -50,7 +52,7 @@ class Namespace {
   }
 }
 
-Namespace.root = new Namespace();
+Namespace.root = new Namespace('ember');
 
 
 function namespaceAndKlassName(fullName) {
@@ -470,12 +472,15 @@ function writeItems(wstream, klass, prefix) {
 function writeNamespace(wstream, namespace, prefix) {
   prefix = prefix || '';
 
-  let childPrefix = namespace.root ? '' : prefix + '  ';
+  let childPrefix = prefix + '  ';
 
-  if (!namespace.root) {
-    let declareExport = (prefix === '') ? 'declare' : 'export';
-    wstream.write(`${prefix}${declareExport} namespace ${namespace.name} {\n`);
+  let declareExport = (prefix === '') ? 'declare' : 'export';
+  let declaration = namespace.module ? `module '${namespace.name}'` :
+                                        `namespace ${namespace.name}`;
 
+  wstream.write(`${prefix}${declareExport} ${declaration} {\n`);
+
+  if (namespace.parent) {
     let selfClass = namespace.parent.classes.get(namespace.name);
     if (selfClass) {
       writeItems(wstream, selfClass, childPrefix);
@@ -491,9 +496,11 @@ function writeNamespace(wstream, namespace, prefix) {
     wstream.write(`${childPrefix}}\n`);
   });
 
-  if (!namespace.root) {
-    wstream.write(`${prefix}}\n`);
+  if (namespace.defaultExport) {
+    wstream.write(`${childPrefix}export default ${namespace.defaultExport}\n`);
   }
+
+  wstream.write(`${prefix}}\n`);
 }
 
 var wstream = fs.createWriteStream('ember.d.ts');

@@ -20,3 +20,4 @@ Intellisense d.ts generator for Ember
 * Declare generic Promise
 * Depend on jQuery
 * Declare methods with multiple signatures multiple times
+* Class constructors
