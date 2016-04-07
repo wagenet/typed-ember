@@ -9,15 +9,11 @@ Intellisense d.ts generator for Ember
 
 ## TODO
 
-* Generate separate definition without prototype extensions
-* Handle additional JSDoc properties (@param, @return)
+* Properly handle prototype extensions
 * Define types of arrays where possible
-* Review situations where multiple types are possible
-* JSDoc for classes and namespaces if supported
 * Ignore Handlebars helpers?
 * Don't hardcode docs.json path
-* Declare DOM classes, e.g. DOMElement
-* Declare generic Promise
-* Depend on jQuery
-* Declare methods with multiple signatures multiple times
-* Class constructors
+* Make Ember.Handlebars accessible
+* Proper external dependencies, e.g. jQuery, Handlebars
+* Class constructors?
+* See if we can further improve methods with multiple signatures
