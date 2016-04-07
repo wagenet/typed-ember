@@ -20,4 +20,3 @@ Intellisense d.ts generator for Ember
 * Declare generic Promise
 * Depend on jQuery
 * Declare methods with multiple signatures multiple times
-* Handle spread operator in the middle of params

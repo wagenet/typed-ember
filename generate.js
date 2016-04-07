@@ -323,7 +323,7 @@ class ClassItem {
     }
   }
 
-  get declaration() {
+  buildDeclaration(skipRest) {
     let str = '';
 
     if (this.klass.isNamespace && !this.klass.isTrueClass) {
@@ -343,7 +343,19 @@ class ClassItem {
     str += this.name.match(/^[$A-Z_][0-9A-Z_$]*$/i) ? this.name : `'${this.name}'`;
 
     if (this.itemType === 'method') {
-      str += `(${this.params ? this.params.join(', ') : ''})`;
+      let params = this.params || [];
+
+      if (skipRest) {
+        params = params.filter(p => !p.rest);
+      } else {
+        let rest = params.find(p => p.rest);
+        if (rest) {
+          params = params.slice(0, params.indexOf(rest)+1);
+        }
+      }
+
+      str += `(${params.join(', ')})`;
+
       if (this.returnType) {
         str += `: ${this.returnType}`;
       }
@@ -353,13 +365,27 @@ class ClassItem {
 
     return str;
   }
+
+  get declarations() {
+    let lines = [this.buildDeclaration()];
+
+    // We normally truncate any arguments after the rest param.
+    // If there are more arguments, then do a build without the rest params,
+    //   this is a bit weird, but it's the best we can do with Typescript.
+    let rest = this.params ? this.params.find(p => p.rest) : null;
+    if (rest && this.params.indexOf(rest) !== this.params.length-1) {
+      lines.push(this.buildDeclaration({ skipRest: true }));
+    }
+
+    return lines;
+  }
 }
 
 class ClassItemParam {
   constructor(data, item) {
     if (data.name[data.name.length-1] === '*') {
       this.name = data.name.slice(0,-1);
-      this.spread = true;
+      this.rest = true;
     } else {
       this.name = data.name;
     }
@@ -374,7 +400,7 @@ class ClassItemParam {
     if (rawType && rawType.indexOf('...') > -1) {
       // FIXME: In some cases this may not be correct, e.g. "String...|Array" in Ember.getProperties
       rawType = rawType.replace('...', '');
-      this.spread = true;
+      this.rest = true;
     }
 
     this.type = rawType ? convertType(rawType, item.klass.fullName) : 'any';
@@ -384,7 +410,7 @@ class ClassItemParam {
     let nameStr = this.name;
     let typeStr = this.type;
 
-    if (this.spread) {
+    if (this.rest) {
       nameStr = `...${nameStr}`;
       // FIXME: Ignoring the other types isn't really correct
       let type = this.type.split('|')[0];
@@ -435,7 +461,9 @@ function writeItems(wstream, klass, prefix) {
     if (item.jsDoc) {
       wstream.write(prefixLines(item.jsDoc, prefix)+'\n');
     }
-    wstream.write(`${prefix}${item.declaration};\n`);
+    item.declarations.forEach(d => {
+      wstream.write(`${prefix}${d};\n`);
+    });
   });
 }
 

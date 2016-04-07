@@ -1063,7 +1063,8 @@ declare namespace Ember {
     /**
      * @description Invokes the passed target/method and optional arguments after a specified period of time. The last parameter of this method must always be a number of milliseconds.
      */
-    later(target: {}, method: Function|string, ...args: any[], wait: number): any;
+    later(target: {}, method: Function|string, ...args: any[]): any;
+    later(target: {}, method: Function|string, wait: number): any;
     /**
      * @description Schedule a function to run one time during the current RunLoop. This is equivalent to calling `scheduleOnce` with the "actions" queue.
      */
@@ -1083,11 +1084,13 @@ declare namespace Ember {
     /**
      * @description Delay calling the target method until the debounce period has elapsed with no additional debounce calls. If `debounce` is called again before the specified time has elapsed, the timer is reset and the entire period must pass again before the target method is called.
      */
-    debounce(target: {}, method: Function|string, ...args: any[], wait: number, immediate: boolean): Ember.Array;
+    debounce(target: {}, method: Function|string, ...args: any[]): Ember.Array;
+    debounce(target: {}, method: Function|string, wait: number, immediate: boolean): Ember.Array;
     /**
      * @description Ensure that the target method is never called more frequently than the specified spacing period. The target method is called immediately.
      */
-    throttle(target: {}, method: Function|string, ...args: any[], spacing: number, immediate: boolean): Ember.Array;
+    throttle(target: {}, method: Function|string, ...args: any[]): Ember.Array;
+    throttle(target: {}, method: Function|string, spacing: number, immediate: boolean): Ember.Array;
   }
   export class LinkComponent extends Component {
     /**
@@ -1131,7 +1134,8 @@ declare namespace Ember {
     /**
      * @description Transition the application into another route. The route may be either a single route or route path:
      */
-    transitionToRoute(name: string, ...models: any[], options: {});
+    transitionToRoute(name: string, ...models: any[]);
+    transitionToRoute(name: string, options: {});
     /**
      * @description The object to which actions from the view should be sent.
      */
@@ -1203,7 +1207,8 @@ declare namespace Ember {
     /**
      * @description Transition the application into another route. The route may be either a single route or route path:
      */
-    transitionTo(name: string, ...models: any[], options: {}): Transition;
+    transitionTo(name: string, ...models: any[]): Transition;
+    transitionTo(name: string, options: {}): Transition;
     /**
      * @description Perform a synchronous transition into another route without attempting to resolve promises, update the URL, or abort any currently active asynchronous transitions (i.e. regular transitions caused by `transitionTo` or URL changes).
      */
@@ -1339,7 +1344,8 @@ declare namespace Ember {
     /**
      * @description Transition the application into another route. The route may be either a single route or route path:
      */
-    transitionToRoute(name: string, ...models: any[], options: {});
+    transitionToRoute(name: string, ...models: any[]);
+    transitionToRoute(name: string, options: {});
     /**
      * @description The object to which actions from the view should be sent.
      */
