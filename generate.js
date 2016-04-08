@@ -7,12 +7,10 @@ const NAMESPACES = new Map();
 
 class Namespace {
   constructor(name, parent) {
-    this.name = name;
-
-    // Bit of a hack
-    if (name === 'ember') {
-      this.module = true;
-      this.defaultExport = 'Ember';
+    if (name) {
+      this.name = name;
+    } else {
+      this.root = true;
     }
 
     this.parent = parent;
@@ -52,7 +50,7 @@ class Namespace {
   }
 }
 
-Namespace.root = new Namespace('ember');
+Namespace.root = new Namespace();
 
 
 const NAMESPACE_MAP = {
@@ -80,7 +78,7 @@ function partsRegexp(parts) {
 
 const RELATIVE_NAMES = {
   'Ember.Array': 'Ember.Array',
-  'RSVP.Promise': 'RSVP.Promise'
+  'RSVP.Promise': 'Ember.RSVP.Promise'
 };
 
 function relativeName(name, base) {
@@ -116,7 +114,7 @@ class Klass {
     this.fullName = data.name;
     this.builtIn = BUILT_IN.indexOf(this.fullName) > -1;
     // Not used, but may be useful later
-    this.mixin = data.extension_for.length > 0;
+    this.mixin = data.extension_for && data.extension_for.length > 0;
     // REVIEW: Is it correct to treat prototype extensions as an interface?
     this.type = this.builtIn ? 'interface' : 'class';
     this.private = data.access === 'private';
@@ -130,7 +128,7 @@ class Klass {
     this.isTrueClass = data.extends || data.uses;
 
     // Hack for correct RSVP promise
-    if (this.fullName === 'RSVP.Promise') {
+    if (this.fullName === 'Ember.RSVP.Promise') {
       this.implements = ['Promise<T>'];
       this.generics = "T";
     }
@@ -218,7 +216,7 @@ class Klass {
     let lines = [];
 
     if (this.deprecated) {
-      lines.push(`DEPRECATED: ${this.deprecationMessage || ''}`)
+      lines.push(`DEPRECATED: ${this.deprecationMessage || ''}`);
     }
 
     if (this.description) {
@@ -334,7 +332,7 @@ class ClassItem {
     let lines = [];
 
     if (this.deprecated) {
-      lines.push(`DEPRECATED: ${this.deprecationMessage || ''}`)
+      lines.push(`DEPRECATED: ${this.deprecationMessage || ''}`);
     } else if (this.klass.deprecated) {
       console.warn(`Parent deprecated but item isn't; parent=${this.klass.fullName}, method=${this.name}`);
       lines.push(`DEPRECATED: ${this.klass.deprecationMessage || ''}`);
@@ -448,7 +446,7 @@ class ClassItemParam {
   }
 }
 
-let rawData = fs.readFileSync('docs.json', { encoding: 'utf8' });
+let rawData = fs.readFileSync('source/ember-docs.json', { encoding: 'utf8' });
 let docs = JSON.parse(rawData);
 
 
@@ -474,6 +472,20 @@ docs.classitems.forEach(data => {
   }
 });
 
+// Add some missing classes
+const ADDITIONAL_CLASSES = [
+  'DOMElement',
+  'Registry',
+  'Transition',
+  'Handlebars.SafeString'
+];
+
+ADDITIONAL_CLASSES.forEach(klassName => {
+  // FIXME: Don't actually export these classes from the module
+  let klass = Klass.create(klassName, { name: klassName });
+  classes.push(klass);
+});
+
 // Do this after all data has been loaded from the JSON
 classes.forEach(k => k.postProcess());
 
@@ -497,15 +509,12 @@ function writeItems(wstream, klass, prefix) {
 function writeNamespace(wstream, namespace, prefix) {
   prefix = prefix || '';
 
-  let childPrefix = prefix + '  ';
+  let childPrefix = namespace.root ? '' : prefix + '  ';
 
-  let declareExport = (prefix === '') ? 'declare' : 'export';
-  let declaration = namespace.module ? `module '${namespace.name}'` :
-                                        `namespace ${namespace.name}`;
+  if (!namespace.root) {
+    let declareExport = (prefix === '') ? 'declare' : 'export';
+    wstream.write(`${prefix}${declareExport} namespace ${namespace.name} {\n`);
 
-  wstream.write(`${prefix}${declareExport} ${declaration} {\n`);
-
-  if (namespace.parent) {
     let selfClass = namespace.parent.classes.get(namespace.name);
     if (selfClass) {
       writeItems(wstream, selfClass, childPrefix);
@@ -524,31 +533,14 @@ function writeNamespace(wstream, namespace, prefix) {
     wstream.write(`${childPrefix}}\n`);
   });
 
-  if (namespace.defaultExport) {
-    wstream.write(`${childPrefix}export default ${namespace.defaultExport}\n`);
+  if (!namespace.root) {
+    wstream.write(`${prefix}}\n`);
   }
-
-  wstream.write(`${prefix}}\n`);
 }
 
-var wstream = fs.createWriteStream('ember.d.ts');
+var wstream = fs.createWriteStream('index.d.ts');
 wstream.once('open', () => {
-  // From browser
-  wstream.write('interface DOMElement {}\n');
-  // Use https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/es6-promise/es6-promise.d.ts
-  wstream.write('interface Promise<T> {}\n');
-  // From Ember container but docs not generated for the container
-  wstream.write('declare class Registry {}\n');
-  // Is this from Router internals?
-  wstream.write('declare class Transition {}\n');
-  // Import Handlebars d.ts instead
-  wstream.write('declare namespace Handlebars { class SafeString {} }\n');
-  // Import jQuery d.ts instead
-  wstream.write('declare class JQuery {}\n');
-
-  wstream.write('\n\n');
-
   writeNamespace(wstream, Namespace.root);
-
+  wstream.write('export default Ember;\n');
   wstream.end();
 });

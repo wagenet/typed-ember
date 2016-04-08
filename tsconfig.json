@@ -1,5 +1,14 @@
 {
-  "files": [
-    "ember.d.ts"
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "out"
+  },
+  "exclude": [
+    "node_modules",
+    "typings/browser",
+    "typings/browser.d.ts",
+    "out/browser.d.ts",
+    "source"
   ]
 }
