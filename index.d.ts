@@ -70,7 +70,7 @@ declare namespace Ember {
   /**
    * Send an event. The execution of suspended listeners is skipped, and once listeners are removed. A listener without a target is executed on the passed object. If an array of actions is not passed, the actions stored on the passed object are invoked.
    */
-  export function sendEvent(obj: any, eventName: string, params: Ember.Array, actions: Ember.Array): void;
+  export function sendEvent(obj: any, eventName: string, params: any[], actions: any[]): void;
   /**
    * Define a property as a function that should be executed when a specified event or events are triggered.
    */
@@ -136,7 +136,7 @@ declare namespace Ember {
   /**
    * Checks to see if the `methodName` exists on the `obj`, and if it does, invokes it with the arguments passed.
    */
-  export function tryInvoke(obj: {}, methodName: string, args: Ember.Array): any;
+  export function tryInvoke(obj: {}, methodName: string, args: any[]): any;
   /**
    * Creates an `Ember.NativeArray` from an Array like object. Does not modify the original object. Ember.A is not needed if `Ember.EXTEND_PROTOTYPES` is `true` (the default value). However, it is recommended that you use Ember.A when creating addons for ember or when you can not guarantee that `Ember.EXTEND_PROTOTYPES` will be `true`.
    */
@@ -359,6 +359,10 @@ declare namespace Ember {
    * The `ApplicationInstance` encapsulates all of the stateful aspects of a running `Application`.
    */
   export class ApplicationInstance extends EngineInstance {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): ApplicationInstance;
   }
   /**
    * An instance of `Ember.Application` is the starting point for every Ember application. It helps to instantiate, initialize and coordinate the many objects that make up your app.
@@ -396,6 +400,10 @@ declare namespace Ember {
      * This creates a registry with the default Ember naming conventions.
      */
     static buildRegistry(namespace: Application): Registry;
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Application;
     /**
      * Given a fullName return the corresponding factory.
      */
@@ -444,11 +452,15 @@ declare namespace Ember {
   /**
    * The `EngineInstance` encapsulates all of the stateful aspects of a running `Engine`.
    */
-  export class EngineInstance extends Object implements RegistryProxyMixin, ContainerProxyMixin {
+  export class EngineInstance extends Ember.Object implements RegistryProxyMixin, ContainerProxyMixin {
     /**
      * Unregister a factory.
      */
     unregister(fullName: string);
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): EngineInstance;
     /**
      * Given a fullName return the corresponding factory.
      */
@@ -503,10 +515,6 @@ declare namespace Ember {
    */
   export class Engine extends Namespace {
     /**
-     * This creates a registry with the default Ember naming conventions.
-     */
-    static buildRegistry(namespace: Application): Registry;
-    /**
      * The goal of initializers should be to register dependencies and injections. This phase runs once. Because these initializers may load code, they are allowed to defer application readiness and advance it. If you need to access the container or store you should use an InstanceInitializer that will be run after all initializers and therefore after all code is loaded and the app is ready.
      */
     initializer(initializer: {});
@@ -515,14 +523,22 @@ declare namespace Ember {
      */
     instanceInitializer(instanceInitializer: any);
     /**
+     * This creates a registry with the default Ember naming conventions.
+     */
+    static buildRegistry(namespace: Application): Registry;
+    /**
      * Set this to provide an alternate class to `Ember.DefaultResolver`
      */
     resolver: any;
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Engine;
   }
   /**
    * The DefaultResolver defines the default lookup rules to resolve container lookups before consulting the container for registered items:
    */
-  export class DefaultResolver extends Object {
+  export class DefaultResolver extends Ember.Object {
     /**
      * This will be set to the Application instance when it is created.
      */
@@ -571,6 +587,10 @@ declare namespace Ember {
      * Look up the specified object (from parsedName) on the appropriate namespace (usually on the Application)
      */
     resolveOther(parsedName: {});
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): DefaultResolver;
   }
   export class Debug {
     /**
@@ -585,7 +605,7 @@ declare namespace Ember {
   /**
    * The `ContainerDebugAdapter` helps the container and resolver interface with tools that debug Ember such as the [Ember Extension](https://github.com/tildeio/ember-extension) for Chrome and Firefox.
    */
-  export class ContainerDebugAdapter extends Object {
+  export class ContainerDebugAdapter extends Ember.Object {
     /**
      * The resolver instance of the application being debugged. This property will be injected on creation.
      */
@@ -597,7 +617,11 @@ declare namespace Ember {
     /**
      * Returns the available classes a given type.
      */
-    catalogEntriesByType(type: string): Ember.Array;
+    catalogEntriesByType(type: string): any[];
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): ContainerDebugAdapter;
   }
   /**
    * The `DataAdapter` helps a data persistence library interface with tools that debug Ember such as the [Ember Extension](https://github.com/tildeio/ember-extension) for Chrome and Firefox.
@@ -614,7 +638,7 @@ declare namespace Ember {
     /**
      * Specifies how records can be filtered. Records returned will need to have a `filterValues` property with a key for every name in the returned array.
      */
-    getFilters(): Ember.Array;
+    getFilters(): any[];
     /**
      * Fetch the model types and observe them for changes.
      */
@@ -638,15 +662,15 @@ declare namespace Ember {
      * DEPRECATED: Use ES6 template strings instead: http://babeljs.io/docs/learn-es2015/#template-strings
      * Apply formatting options to the string. This will look for occurrences of "%@" in your string and substitute them with the arguments you pass into this method. If you want to control the specific order of replacement, you can add a number after the key as well to indicate which argument you want to insert.
      */
-    fmt(str: string, formats: Ember.Array): string;
+    fmt(str: string, formats: any[]): string;
     /**
      * Formats the passed string, but first looks up the string in the localized strings hash. This is a convenient way to localize text. See `Ember.String.fmt()` for more information on formatting.
      */
-    loc(str: string, formats: Ember.Array): string;
+    loc(str: string, formats: any[]): string;
     /**
      * Splits a string into separate units separated by spaces, eliminating any empty strings in the process. This is a convenience method for split that is mostly useful when applied to the `String.prototype`.
      */
-    w(str: string): Ember.Array;
+    w(str: string): any[];
     /**
      * Converts a camelized string into all lower case separated by underscores.
      */
@@ -683,7 +707,7 @@ declare namespace Ember {
     /**
      * Override this function when writing a class-based helper.
      */
-    compute(params: Ember.Array, hash: {});
+    compute(params: any[], hash: {});
     /**
      * In many cases, the ceremony of a full `Ember.Helper` class is not required. The `helper` method create pure-function helpers without instances. For example:
      */
@@ -946,7 +970,7 @@ declare namespace Ember {
    * The `Ember.Mixin` class allows you to create mixins, whose properties can be added to other classes. For instance,
    */
   export class Mixin {
-    static create(args: any);
+    static create(args: any): Mixin;
   }
   /**
    * Runs the passed target and method inside of a RunLoop, ensuring any deferred actions including bindings and views updates are flushed at the end.
@@ -956,7 +980,7 @@ declare namespace Ember {
      * DEPRECATED: 
      * Replaces objects in an array with the passed objects.
      */
-    replace(array: Ember.Array, idx: number, amt: number, objects: Ember.Array): Ember.Array;
+    replace(array: any[], idx: number, amt: number, objects: any[]): any[];
     /**
      * If no run-loop is present, it creates a new one. If a run loop is present it will queue itself to run on the existing run-loops action queue.
      */
@@ -1001,13 +1025,13 @@ declare namespace Ember {
     /**
      * Delay calling the target method until the debounce period has elapsed with no additional debounce calls. If `debounce` is called again before the specified time has elapsed, the timer is reset and the entire period must pass again before the target method is called.
      */
-    debounce(target: {}, method: Function|string, ...args: any[]): Ember.Array;
-    debounce(target: {}, method: Function|string, wait: number, immediate: boolean): Ember.Array;
+    debounce(target: {}, method: Function|string, ...args: any[]): any[];
+    debounce(target: {}, method: Function|string, wait: number, immediate: boolean): any[];
     /**
      * Ensure that the target method is never called more frequently than the specified spacing period. The target method is called immediately.
      */
-    throttle(target: {}, method: Function|string, ...args: any[]): Ember.Array;
-    throttle(target: {}, method: Function|string, spacing: number, immediate: boolean): Ember.Array;
+    throttle(target: {}, method: Function|string, ...args: any[]): any[];
+    throttle(target: {}, method: Function|string, spacing: number, immediate: boolean): any[];
   }
   /**
    * `Ember.LinkComponent` renders an element whose `click` event triggers a transition of the application's instance of `Ember.Router` to a supplied route by name.
@@ -1040,11 +1064,15 @@ declare namespace Ember {
     /**
      * By default the `{{link-to}}` component will bind to the `href` and `title` attributes. It's discouraged that you override these defaults, however you can push onto the array if needed.
      */
-    attributeBindings: Ember.Array;
+    attributeBindings: any[];
     /**
      * By default the `{{link-to}}` component will bind to the `active`, `loading`, and `disabled` classes. It is discouraged to override these directly.
      */
-    classNameBindings: Ember.Array;
+    classNameBindings: any[];
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): LinkComponent;
   }
   export class ControllerMixin implements ActionHandler {
     /**
@@ -1086,22 +1114,34 @@ declare namespace Ember {
   /**
    * `Ember.HashLocation` implements the location API using the browser's hash. At present, it relies on a `hashchange` event existing in the browser.
    */
-  export class HashLocation extends Object {
+  export class HashLocation extends Ember.Object {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): HashLocation;
   }
   /**
    * Ember.HistoryLocation implements the location API using the browser's history.pushState API.
    */
-  export class HistoryLocation extends Object {
+  export class HistoryLocation extends Ember.Object {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): HistoryLocation;
   }
   /**
    * Ember.NoneLocation does not interact with the browser. It is useful for testing, or when you need to manage state with your Router, but temporarily don't want it to muck with the URL (for example when you embed your application in a larger page).
    */
-  export class NoneLocation extends Object {
+  export class NoneLocation extends Ember.Object {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): NoneLocation;
   }
   /**
    * The `Ember.Route` class is used to define individual routes. Refer to the [routing guide](http://emberjs.com/guides/routing/) for documentation.
    */
-  export class Route extends Object implements ActionHandler, Evented {
+  export class Route extends Ember.Object implements ActionHandler, Evented {
     /**
      * Configuration hash for this route's queryParams. The possible configuration options and their defaults are as follows (assuming a query param whose controller property is `page`):
      */
@@ -1182,7 +1222,7 @@ declare namespace Ember {
     /**
      * A hook you can implement to convert the route's model into parameters for the URL.
      */
-    serialize(model: {}, params: Ember.Array): {};
+    serialize(model: {}, params: any[]): {};
     /**
      * A hook you can use to setup the controller for the current route.
      */
@@ -1207,6 +1247,10 @@ declare namespace Ember {
      * Disconnects a view that has been rendered into an outlet.
      */
     disconnectOutlet(options: {}|string);
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Route;
     /**
      * The collection of functions, keyed by name, available on this `ActionHandler` as action targets.
      */
@@ -1235,7 +1279,7 @@ declare namespace Ember {
   /**
    * The `Ember.Router` class manages the application state and URLs. Refer to the [routing guide](http://emberjs.com/guides/routing/) for documentation.
    */
-  export class Router extends Object implements Evented {
+  export class Router extends Ember.Object implements Evented {
     /**
      * The `location` property determines the type of URL's that your application will use.
      */
@@ -1262,6 +1306,10 @@ declare namespace Ember {
      */
     map(callback: any);
     /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Router;
+    /**
      * Subscribes to a named event with given function.
      */
     on(name: string, target: {}, method: Function): void;
@@ -1282,7 +1330,11 @@ declare namespace Ember {
      */
     has(name: string): boolean;
   }
-  export class Controller extends Object implements ControllerMixin {
+  export class Controller extends Ember.Object implements ControllerMixin {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Controller;
     /**
      * Defines which query parameters the controller accepts. If you give the names `['category','page']` it will bind the values of these query parameters to the variables `this.category` and `this.page`
      */
@@ -1355,7 +1407,7 @@ declare namespace Ember {
     /**
      * This returns the objects at the specified indexes, using `objectAt`.
      */
-    objectsAt(indexes: Ember.Array): Ember.Array;
+    objectsAt(indexes: any[]): any[];
     /**
      * This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
      */
@@ -1363,7 +1415,7 @@ declare namespace Ember {
     /**
      * Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
      */
-    slice(beginIndex: number, endIndex: number): Ember.Array;
+    slice(beginIndex: number, endIndex: number): any[];
     /**
      * Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
      */
@@ -1415,7 +1467,7 @@ declare namespace Ember {
     /**
      * Alias for `mapBy`
      */
-    getEach(key: string): Ember.Array;
+    getEach(key: string): any[];
     /**
      * Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
      */
@@ -1423,27 +1475,27 @@ declare namespace Ember {
     /**
      * Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
      */
-    map(callback: Function, target: {}): Ember.Array;
+    map(callback: Function, target: {}): any[];
     /**
      * Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
      */
-    mapBy(key: string): Ember.Array;
+    mapBy(key: string): any[];
     /**
      * Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
      */
-    filter(callback: Function, target: {}): Ember.Array;
+    filter(callback: Function, target: {}): any[];
     /**
      * Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
      */
-    reject(callback: Function, target: {}): Ember.Array;
+    reject(callback: Function, target: {}): any[];
     /**
      * Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
      */
-    filterBy(key: string, value: any): Ember.Array;
+    filterBy(key: string, value: any): any[];
     /**
      * Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
      */
-    rejectBy(key: string, value: string): Ember.Array;
+    rejectBy(key: string, value: string): any[];
     /**
      * Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
      */
@@ -1475,15 +1527,15 @@ declare namespace Ember {
     /**
      * Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
      */
-    invoke(methodName: string, ...args: any[]): Ember.Array;
+    invoke(methodName: string, ...args: any[]): any[];
     /**
      * Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
      */
-    toArray(): Ember.Array;
+    toArray(): any[];
     /**
      * Returns a copy of the array with all `null` and `undefined` elements removed.
      */
-    compact(): Ember.Array;
+    compact(): any[];
     /**
      * Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
      */
@@ -1495,7 +1547,7 @@ declare namespace Ember {
     /**
      * Converts the enumerable into an array and sorts by the keys specified in the argument.
      */
-    sortBy(property: string): Ember.Array;
+    sortBy(property: string): any[];
   }
   /**
    * Implements some standard methods for comparing objects. Add this mixin to any class you create that can compare its instances.
@@ -1530,7 +1582,7 @@ declare namespace Ember {
     /**
      * Alias for `mapBy`
      */
-    getEach(key: string): Ember.Array;
+    getEach(key: string): any[];
     /**
      * Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
      */
@@ -1538,27 +1590,27 @@ declare namespace Ember {
     /**
      * Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
      */
-    map(callback: Function, target: {}): Ember.Array;
+    map(callback: Function, target: {}): any[];
     /**
      * Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
      */
-    mapBy(key: string): Ember.Array;
+    mapBy(key: string): any[];
     /**
      * Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
      */
-    filter(callback: Function, target: {}): Ember.Array;
+    filter(callback: Function, target: {}): any[];
     /**
      * Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
      */
-    reject(callback: Function, target: {}): Ember.Array;
+    reject(callback: Function, target: {}): any[];
     /**
      * Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
      */
-    filterBy(key: string, value: any): Ember.Array;
+    filterBy(key: string, value: any): any[];
     /**
      * Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
      */
-    rejectBy(key: string, value: string): Ember.Array;
+    rejectBy(key: string, value: string): any[];
     /**
      * Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
      */
@@ -1590,15 +1642,15 @@ declare namespace Ember {
     /**
      * Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
      */
-    invoke(methodName: string, ...args: any[]): Ember.Array;
+    invoke(methodName: string, ...args: any[]): any[];
     /**
      * Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
      */
-    toArray(): Ember.Array;
+    toArray(): any[];
     /**
      * Returns a copy of the array with all `null` and `undefined` elements removed.
      */
-    compact(): Ember.Array;
+    compact(): any[];
     /**
      * Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
      */
@@ -1610,7 +1662,7 @@ declare namespace Ember {
     /**
      * Converts the enumerable into an array and sorts by the keys specified in the argument.
      */
-    sortBy(property: string): Ember.Array;
+    sortBy(property: string): any[];
   }
   /**
    * This mixin allows for Ember objects to subscribe to and emit events.
@@ -1650,7 +1702,7 @@ declare namespace Ember {
     /**
      * __Required.__ You must implement this method to apply this mixin.
      */
-    replace(idx: number, amt: number, objects: Ember.Array);
+    replace(idx: number, amt: number, objects: any[]);
     /**
      * Remove all elements from the array. This is useful if you want to reuse an existing array without having to recreate it.
      */
@@ -1714,7 +1766,7 @@ declare namespace Ember {
     /**
      * This returns the objects at the specified indexes, using `objectAt`.
      */
-    objectsAt(indexes: Ember.Array): Ember.Array;
+    objectsAt(indexes: any[]): any[];
     /**
      * This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
      */
@@ -1722,7 +1774,7 @@ declare namespace Ember {
     /**
      * Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
      */
-    slice(beginIndex: number, endIndex: number): Ember.Array;
+    slice(beginIndex: number, endIndex: number): any[];
     /**
      * Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
      */
@@ -1774,7 +1826,7 @@ declare namespace Ember {
     /**
      * Alias for `mapBy`
      */
-    getEach(key: string): Ember.Array;
+    getEach(key: string): any[];
     /**
      * Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
      */
@@ -1782,27 +1834,27 @@ declare namespace Ember {
     /**
      * Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
      */
-    map(callback: Function, target: {}): Ember.Array;
+    map(callback: Function, target: {}): any[];
     /**
      * Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
      */
-    mapBy(key: string): Ember.Array;
+    mapBy(key: string): any[];
     /**
      * Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
      */
-    filter(callback: Function, target: {}): Ember.Array;
+    filter(callback: Function, target: {}): any[];
     /**
      * Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
      */
-    reject(callback: Function, target: {}): Ember.Array;
+    reject(callback: Function, target: {}): any[];
     /**
      * Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
      */
-    filterBy(key: string, value: any): Ember.Array;
+    filterBy(key: string, value: any): any[];
     /**
      * Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
      */
-    rejectBy(key: string, value: string): Ember.Array;
+    rejectBy(key: string, value: string): any[];
     /**
      * Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
      */
@@ -1834,15 +1886,15 @@ declare namespace Ember {
     /**
      * Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
      */
-    invoke(methodName: string, ...args: any[]): Ember.Array;
+    invoke(methodName: string, ...args: any[]): any[];
     /**
      * Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
      */
-    toArray(): Ember.Array;
+    toArray(): any[];
     /**
      * Returns a copy of the array with all `null` and `undefined` elements removed.
      */
-    compact(): Ember.Array;
+    compact(): any[];
     /**
      * Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
      */
@@ -1854,7 +1906,7 @@ declare namespace Ember {
     /**
      * Converts the enumerable into an array and sorts by the keys specified in the argument.
      */
-    sortBy(property: string): Ember.Array;
+    sortBy(property: string): any[];
     /**
      * Adds each object in the passed enumerable to the receiver.
      */
@@ -1903,7 +1955,7 @@ declare namespace Ember {
     /**
      * Alias for `mapBy`
      */
-    getEach(key: string): Ember.Array;
+    getEach(key: string): any[];
     /**
      * Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
      */
@@ -1911,27 +1963,27 @@ declare namespace Ember {
     /**
      * Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
      */
-    map(callback: Function, target: {}): Ember.Array;
+    map(callback: Function, target: {}): any[];
     /**
      * Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
      */
-    mapBy(key: string): Ember.Array;
+    mapBy(key: string): any[];
     /**
      * Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
      */
-    filter(callback: Function, target: {}): Ember.Array;
+    filter(callback: Function, target: {}): any[];
     /**
      * Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
      */
-    reject(callback: Function, target: {}): Ember.Array;
+    reject(callback: Function, target: {}): any[];
     /**
      * Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
      */
-    filterBy(key: string, value: any): Ember.Array;
+    filterBy(key: string, value: any): any[];
     /**
      * Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
      */
-    rejectBy(key: string, value: string): Ember.Array;
+    rejectBy(key: string, value: string): any[];
     /**
      * Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
      */
@@ -1963,15 +2015,15 @@ declare namespace Ember {
     /**
      * Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
      */
-    invoke(methodName: string, ...args: any[]): Ember.Array;
+    invoke(methodName: string, ...args: any[]): any[];
     /**
      * Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
      */
-    toArray(): Ember.Array;
+    toArray(): any[];
     /**
      * Returns a copy of the array with all `null` and `undefined` elements removed.
      */
-    compact(): Ember.Array;
+    compact(): any[];
     /**
      * Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
      */
@@ -1983,7 +2035,7 @@ declare namespace Ember {
     /**
      * Converts the enumerable into an array and sorts by the keys specified in the argument.
      */
-    sortBy(property: string): Ember.Array;
+    sortBy(property: string): any[];
   }
   /**
    * ## Overview
@@ -2083,15 +2135,20 @@ declare namespace Ember {
    * `Ember.TargetActionSupport` is a mixin that can be included in a class to add a `triggerAction` method with semantics similar to the Handlebars `{{action}}` helper. In normal Ember usage, the `{{action}}` helper is usually the best choice. This mixin is most often useful when you are doing more complex event handling in View objects.
    */
   export class TargetActionSupport extends Mixin {
+    static create(args: any): TargetActionSupport;
   }
   /**
    * An ArrayProxy wraps any other object that implements `Ember.Array` and/or `Ember.MutableArray,` forwarding all requests. This makes it very useful for a number of binding use cases or other cases where being able to swap out the underlying array is useful.
    */
-  export class ArrayProxy extends Object implements MutableArray {
+  export class ArrayProxy extends Ember.Object implements MutableArray {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): ArrayProxy;
     /**
      * __Required.__ You must implement this method to apply this mixin.
      */
-    replace(idx: number, amt: number, objects: Ember.Array);
+    replace(idx: number, amt: number, objects: any[]);
     /**
      * Remove all elements from the array. This is useful if you want to reuse an existing array without having to recreate it.
      */
@@ -2155,7 +2212,7 @@ declare namespace Ember {
     /**
      * This returns the objects at the specified indexes, using `objectAt`.
      */
-    objectsAt(indexes: Ember.Array): Ember.Array;
+    objectsAt(indexes: any[]): any[];
     /**
      * This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
      */
@@ -2163,7 +2220,7 @@ declare namespace Ember {
     /**
      * Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
      */
-    slice(beginIndex: number, endIndex: number): Ember.Array;
+    slice(beginIndex: number, endIndex: number): any[];
     /**
      * Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
      */
@@ -2215,7 +2272,7 @@ declare namespace Ember {
     /**
      * Alias for `mapBy`
      */
-    getEach(key: string): Ember.Array;
+    getEach(key: string): any[];
     /**
      * Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
      */
@@ -2223,27 +2280,27 @@ declare namespace Ember {
     /**
      * Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
      */
-    map(callback: Function, target: {}): Ember.Array;
+    map(callback: Function, target: {}): any[];
     /**
      * Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
      */
-    mapBy(key: string): Ember.Array;
+    mapBy(key: string): any[];
     /**
      * Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
      */
-    filter(callback: Function, target: {}): Ember.Array;
+    filter(callback: Function, target: {}): any[];
     /**
      * Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
      */
-    reject(callback: Function, target: {}): Ember.Array;
+    reject(callback: Function, target: {}): any[];
     /**
      * Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
      */
-    filterBy(key: string, value: any): Ember.Array;
+    filterBy(key: string, value: any): any[];
     /**
      * Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
      */
-    rejectBy(key: string, value: string): Ember.Array;
+    rejectBy(key: string, value: string): any[];
     /**
      * Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
      */
@@ -2275,15 +2332,15 @@ declare namespace Ember {
     /**
      * Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
      */
-    invoke(methodName: string, ...args: any[]): Ember.Array;
+    invoke(methodName: string, ...args: any[]): any[];
     /**
      * Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
      */
-    toArray(): Ember.Array;
+    toArray(): any[];
     /**
      * Returns a copy of the array with all `null` and `undefined` elements removed.
      */
-    compact(): Ember.Array;
+    compact(): any[];
     /**
      * Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
      */
@@ -2295,7 +2352,7 @@ declare namespace Ember {
     /**
      * Converts the enumerable into an array and sorts by the keys specified in the argument.
      */
-    sortBy(property: string): Ember.Array;
+    sortBy(property: string): any[];
     /**
      * Adds each object in the passed enumerable to the receiver.
      */
@@ -2313,11 +2370,11 @@ declare namespace Ember {
     /**
      * Defines the properties that will be concatenated from the superclass (instead of overridden).
      */
-    concatenatedProperties: Ember.Array;
+    concatenatedProperties: any[];
     /**
      * Defines the properties that will be merged from the superclass (instead of overridden).
      */
-    mergedProperties: Ember.Array;
+    mergedProperties: any[];
     /**
      * Destroyed object property flag.
      */
@@ -2329,7 +2386,7 @@ declare namespace Ember {
     /**
      * Destroys an object by setting the `isDestroyed` flag and removing its metadata, which effectively destroys observers and bindings.
      */
-    destroy(): {};
+    destroy(): Ember.Object;
     /**
      * Override to implement teardown.
      */
@@ -2345,7 +2402,7 @@ declare namespace Ember {
     /**
      * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
      */
-    static create(args: any);
+    static create(args: any): CoreObject;
     /**
      * Augments a constructor's prototype with additional properties and functions:
      */
@@ -2363,7 +2420,11 @@ declare namespace Ember {
   /**
    * A Namespace is an object usually used to contain other objects or methods such as an application or framework. Create a namespace anytime you want to define one of these new containers.
    */
-  export class Namespace extends Object {
+  export class Namespace extends Ember.Object {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Namespace;
   }
   /**
    * The NativeArray mixin contains the properties needed to make the native Array support Ember.MutableArray and all of its dependent APIs. Unless you have `Ember.EXTEND_PROTOTYPES` or `Ember.EXTEND_PROTOTYPES.Array` set to false, this will be applied automatically. Otherwise you can apply the mixin at anytime by calling `Ember.NativeArray.activate`.
@@ -2372,7 +2433,7 @@ declare namespace Ember {
     /**
      * __Required.__ You must implement this method to apply this mixin.
      */
-    replace(idx: number, amt: number, objects: Ember.Array);
+    replace(idx: number, amt: number, objects: any[]);
     /**
      * Remove all elements from the array. This is useful if you want to reuse an existing array without having to recreate it.
      */
@@ -2436,7 +2497,7 @@ declare namespace Ember {
     /**
      * This returns the objects at the specified indexes, using `objectAt`.
      */
-    objectsAt(indexes: Ember.Array): Ember.Array;
+    objectsAt(indexes: any[]): any[];
     /**
      * This is the handler for the special array content property. If you get this property, it will return this. If you set this property to a new array, it will replace the current content.
      */
@@ -2444,7 +2505,7 @@ declare namespace Ember {
     /**
      * Returns a new array that is a slice of the receiver. This implementation uses the observable array methods to retrieve the objects for the new slice.
      */
-    slice(beginIndex: number, endIndex: number): Ember.Array;
+    slice(beginIndex: number, endIndex: number): any[];
     /**
      * Returns the index of the given object's first occurrence. If no `startAt` argument is given, the starting location to search is 0. If it's negative, will count backward from the end of the array. Returns -1 if no match is found.
      */
@@ -2496,7 +2557,7 @@ declare namespace Ember {
     /**
      * Alias for `mapBy`
      */
-    getEach(key: string): Ember.Array;
+    getEach(key: string): any[];
     /**
      * Sets the value on the named property for each member. This is more efficient than using other methods defined on this helper. If the object implements Ember.Observable, the value will be changed to `set(),` otherwise it will be set directly. `null` objects are skipped.
      */
@@ -2504,27 +2565,27 @@ declare namespace Ember {
     /**
      * Maps all of the items in the enumeration to another value, returning a new array. This method corresponds to `map()` defined in JavaScript 1.6.
      */
-    map(callback: Function, target: {}): Ember.Array;
+    map(callback: Function, target: {}): any[];
     /**
      * Similar to map, this specialized function returns the value of the named property on all items in the enumeration.
      */
-    mapBy(key: string): Ember.Array;
+    mapBy(key: string): any[];
     /**
      * Returns an array with all of the items in the enumeration that the passed function returns true for. This method corresponds to `filter()` defined in JavaScript 1.6.
      */
-    filter(callback: Function, target: {}): Ember.Array;
+    filter(callback: Function, target: {}): any[];
     /**
      * Returns an array with all of the items in the enumeration where the passed function returns false. This method is the inverse of filter().
      */
-    reject(callback: Function, target: {}): Ember.Array;
+    reject(callback: Function, target: {}): any[];
     /**
      * Returns an array with just the items with the matched property. You can pass an optional second argument with the target value. Otherwise this will match any property that evaluates to `true`.
      */
-    filterBy(key: string, value: any): Ember.Array;
+    filterBy(key: string, value: any): any[];
     /**
      * Returns an array with the items that do not have truthy values for key.  You can pass an optional second argument with the target value.  Otherwise this will match any property that evaluates to false.
      */
-    rejectBy(key: string, value: string): Ember.Array;
+    rejectBy(key: string, value: string): any[];
     /**
      * Returns the first item in the array for which the callback returns true. This method works similar to the `filter()` method defined in JavaScript 1.6 except that it will stop working on the array once a match is found.
      */
@@ -2556,15 +2617,15 @@ declare namespace Ember {
     /**
      * Invokes the named method on every object in the receiver that implements it. This method corresponds to the implementation in Prototype 1.6.
      */
-    invoke(methodName: string, ...args: any[]): Ember.Array;
+    invoke(methodName: string, ...args: any[]): any[];
     /**
      * Simply converts the enumerable into a genuine array. The order is not guaranteed. Corresponds to the method implemented by Prototype.
      */
-    toArray(): Ember.Array;
+    toArray(): any[];
     /**
      * Returns a copy of the array with all `null` and `undefined` elements removed.
      */
-    compact(): Ember.Array;
+    compact(): any[];
     /**
      * Returns a new enumerable that excludes the passed value. The default implementation returns an array regardless of the receiver type unless the receiver does not contain the value.
      */
@@ -2576,7 +2637,7 @@ declare namespace Ember {
     /**
      * Converts the enumerable into an array and sorts by the keys specified in the argument.
      */
-    sortBy(property: string): Ember.Array;
+    sortBy(property: string): any[];
     /**
      * Adds each object in the passed enumerable to the receiver.
      */
@@ -2639,6 +2700,10 @@ declare namespace Ember {
    */
   export class Object extends CoreObject implements Observable {
     /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Object;
+    /**
      * Retrieves the value of a property from the object.
      */
     get(keyName: string): {};
@@ -2692,11 +2757,19 @@ declare namespace Ember {
    */
   export class ObjectProxy {
   }
-  export class Service extends Object {
+  export class Service extends Ember.Object {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Service;
   }
   export class _Metamorph {
   }
   export class _MetamorphView extends View implements _Metamorph {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): _MetamorphView;
   }
   /**
    * An `Ember.Component` is a view that is completely isolated. Properties accessed in its templates go to the view object and actions are targeted at the view object. There is no access to the surrounding context or outer controller; all contextual information must be passed in.
@@ -2718,6 +2791,10 @@ declare namespace Ember {
      * Enables components to take a list of parameters as arguments
      */
     static positionalParams: any;
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Component;
     /**
      * Renders the view again. This will work regardless of whether the view is already in the DOM or not. If the view is in the DOM, the rendering process will be deferred to give bindings a chance to synchronize.
      */
@@ -2753,11 +2830,11 @@ declare namespace Ember {
     /**
      * Standard CSS class names to apply to the view's outer element. This property automatically inherits any class names defined by the view's superclasses as well.
      */
-    classNames: Ember.Array;
+    classNames: any[];
     /**
      * A list of properties of the view to apply as class names. If the property is a string value, the value of that string will be applied as a class name.
      */
-    classNameBindings: Ember.Array;
+    classNameBindings: any[];
   }
   export class EmptyViewSupport {
   }
@@ -2775,6 +2852,7 @@ declare namespace Ember {
    * `TextSupport` is a shared mixin used by both `Ember.TextField` and `Ember.TextArea`. `TextSupport` adds a number of methods that allow you to specify a controller action to invoke when a certain event is fired on your text field or textarea. The specifed controller action would get the current value of the field passed in as the only argument unless the value of the field is empty. In that case, the instance of the field itself is passed in as the only argument.
    */
   export class TextSupport extends Mixin implements TargetActionSupport {
+    static create(args: any): TextSupport;
   }
   /**
    * `Ember.ViewTargetActionSupport` is a mixin that can be included in a view class to add a `triggerAction` method with semantics similar to the Handlebars `{{action}}` helper. It provides intelligent defaults for the action's target: the view's controller; and the context that is sent with the action: the view's context.
@@ -2804,6 +2882,7 @@ declare namespace Ember {
      * Normally, Ember's component model is "write-only". The component takes a bunch of attributes that it got passed in, and uses them to render its template.
      */
     readDOMAttr(name: string): void;
+    static create(args: any): ViewTargetActionSupport;
   }
   export class VisibilitySupport {
     /**
@@ -2814,34 +2893,56 @@ declare namespace Ember {
   /**
    * `Ember.EventDispatcher` handles delegating browser events to their corresponding `Ember.Views.` For example, when you click on a view, `Ember.EventDispatcher` ensures that that view's `mouseDown` method gets called.
    */
-  export class EventDispatcher extends Object {
+  export class EventDispatcher extends Ember.Object {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): EventDispatcher;
   }
   /**
    * The internal class used to create text inputs when the `{{input}}` helper is used with `type` of `checkbox`.
    */
   export class Checkbox extends Component {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Checkbox;
   }
   /**
    * `Ember.CollectionView` is an `Ember.View` descendent responsible for managing a collection (an array or array-like object) by maintaining a child view object and associated DOM representation for each item in the array and ensuring that child views and their associated rendered HTML are updated when items in the array are added, removed, or replaced.
    */
   export class CollectionView extends ContainerView implements EmptyViewSupport {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): CollectionView;
   }
   /**
    * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-containerview
    * A `ContainerView` is an `Ember.View` subclass that implements `Ember.MutableArray` allowing programmatic management of its child views.
    */
   export class ContainerView extends View {
+    /**
+     * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-containerview
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): ContainerView;
   }
   /**
    * DEPRECATED: Use `Ember.View` instead.
    * `Ember.CoreView` is an abstract class that exists to give view-like behavior to both Ember's main view class `Ember.View` and other classes that don't need the fully functionaltiy of `Ember.View`.
    */
-  export class CoreView extends Object implements Evented, ActionHandler {
+  export class CoreView extends Ember.Object implements Evented, ActionHandler {
     /**
      * DEPRECATED: Use `Ember.View` instead.
      * Override the default event firing from `Ember.Evented` to also call methods with the given name.
      */
     trigger(name: string);
+    /**
+     * DEPRECATED: Use `Ember.View` instead.
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): CoreView;
     /**
      * DEPRECATED: Use `Ember.View` instead.
      * Subscribes to a named event with given function.
@@ -2897,7 +2998,7 @@ declare namespace Ember {
      * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-select
      * The list of options.
      */
-    content: Ember.Array;
+    content: any[];
     /**
      * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-select
      * When `multiple` is `false`, the element of `content` that is currently selected, if any.
@@ -2933,11 +3034,20 @@ declare namespace Ember {
      * The view class for optgroup.
      */
     groupView: View;
+    /**
+     * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-select
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): Select;
   }
   /**
    * The internal class used to create textarea element when the `{{textarea}}` helper is used.
    */
   export class TextArea extends Component implements TextSupport {
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): TextArea;
   }
   /**
    * The internal class used to create text inputs when the `{{input}}` helper is used with `type` of `text`. See [Ember.Templates.helpers.input](/api/classes/Ember.Templates.helpers.html#method_input)  for usage details. ## Layout and LayoutName properties Because HTML `input` elements are self closing `layout` and `layoutName` properties will not be applied. See [Ember.View](/api/classes/Ember.View.html)'s layout section for more information.
@@ -2967,6 +3077,10 @@ declare namespace Ember {
      * The `max` attribute of input element used with `type="number"` or `type="range"`.
      */
     max: string;
+    /**
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): TextField;
   }
   /**
    * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-view
@@ -2975,14 +3089,19 @@ declare namespace Ember {
   export class View extends CoreView implements TemplateRenderingSupport, ClassNamesSupport, LegacyViewSupport, InstrumentationSupport, VisibilitySupport, AriaRoleSupport {
     /**
      * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-view
+     * Creates an instance of a class. Accepts either no arguments, or an object containing values to initialize the newly instantiated object with.
+     */
+    static create(args: any): View;
+    /**
+     * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-view
      * Standard CSS class names to apply to the view's outer element. This property automatically inherits any class names defined by the view's superclasses as well.
      */
-    classNames: Ember.Array;
+    classNames: any[];
     /**
      * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-view
      * A list of properties of the view to apply as class names. If the property is a string value, the value of that string will be applied as a class name.
      */
-    classNameBindings: Ember.Array;
+    classNameBindings: any[];
     /**
      * DEPRECATED: See http://emberjs.com/deprecations/v1.x/#toc_ember-view
      * Used to identify this view during debugging
