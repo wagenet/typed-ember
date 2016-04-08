@@ -2,169 +2,169 @@ declare namespace Ember {
   /**
    * Display a deprecation warning with the provided message and a stack trace (Chrome and Firefox only). Ember build tools will remove any calls to `Ember.deprecate()` when doing a production build.
    */
-  function deprecate(message: string, test: boolean, options: {});
+  export function deprecate(message: string, test: boolean, options: {});
   /**
    * Define an assertion that will throw an exception if the condition is not met. Ember build tools will remove any calls to `Ember.assert()` when doing an Ember.js framework production build and will make the assertion a no-op for an application production build. Example:
    */
-  function assert(desc: string, test: boolean);
+  export function assert(desc: string, test: boolean);
   /**
    * Display a debug notice. Ember build tools will remove any calls to `Ember.debug()` when doing a production build.
    */
-  function debug(message: string);
+  export function debug(message: string);
   /**
    * Run a function meant for debugging. Ember build tools will remove any calls to `Ember.runInDebug()` when doing a production build.
    */
-  function runInDebug(func: Function);
+  export function runInDebug(func: Function);
   /**
    * Display a warning with the provided message. Ember build tools will remove any calls to `Ember.warn()` when doing a production build.
    */
-  function warn(message: string, test: boolean, options: {});
+  export function warn(message: string, test: boolean, options: {});
   /**
    * Copy properties from a source object to a target object.
    */
-  function assign(original: {}, args: {}): {};
+  export function assign(original: {}, args: {}): {};
   /**
    * Debug parameter you can turn on. This will log all bindings that fire to the console. This should be disabled in production code. Note that you can also enable this from the console or temporarily.
    */
-  var LOG_BINDINGS: boolean;
+  export var LOG_BINDINGS: boolean;
   /**
    * Global helper method to create a new binding. Just pass the root object along with a `to` and `from` path to create and connect the binding.
    */
-  function bind(obj: {}, to: string, from: string): Binding;
+  export function bind(obj: {}, to: string, from: string): Binding;
   /**
    * Returns the cached value for a property, if one exists. This can be useful for peeking at the value of a computed property that is generated lazily, without accidentally causing it to be created.
    */
-  function cacheFor(obj: {}, key: string): {};
+  export function cacheFor(obj: {}, key: string): {};
   /**
    * The semantic version.
    */
-  var VERSION: string;
+  export var VERSION: string;
   /**
    * The hash of environment variables used to control various configuration settings. To specify your own or override default settings, add the desired properties to a global hash named `EmberENV` (or `ENV` for backwards compatibility with earlier versions of Ember). The `EmberENV` hash must be created before loading Ember.
    */
-  var ENV: {};
+  export var ENV: {};
   /**
    * Determines whether Ember should add to `Array`, `Function`, and `String` native object prototypes, a few extra methods in order to provide a more friendly API.
    */
-  var EXTEND_PROTOTYPES: boolean;
+  export var EXTEND_PROTOTYPES: boolean;
   /**
    * The `LOG_STACKTRACE_ON_DEPRECATION` property, when true, tells Ember to log a full stack trace during deprecation warnings.
    */
-  var LOG_STACKTRACE_ON_DEPRECATION: boolean;
+  export var LOG_STACKTRACE_ON_DEPRECATION: boolean;
   /**
    * The `LOG_VERSION` property, when true, tells Ember to log versions of all dependent libraries in use.
    */
-  var LOG_VERSION: boolean;
+  export var LOG_VERSION: boolean;
   /**
    * An empty function useful for some operations. Always returns `this`.
    */
-  function K(): {};
+  export function K(): {};
   /**
    * Add an event listener
    */
-  function addListener(obj: any, eventName: string, target: {}|Function, method: Function|string, once: boolean);
+  export function addListener(obj: any, eventName: string, target: {}|Function, method: Function|string, once: boolean);
   /**
    * Remove an event listener
    */
-  function removeListener(obj: any, eventName: string, target: {}|Function, method: Function|string);
+  export function removeListener(obj: any, eventName: string, target: {}|Function, method: Function|string);
   /**
    * Send an event. The execution of suspended listeners is skipped, and once listeners are removed. A listener without a target is executed on the passed object. If an array of actions is not passed, the actions stored on the passed object are invoked.
    */
-  function sendEvent(obj: any, eventName: string, params: Ember.Array, actions: Ember.Array): void;
+  export function sendEvent(obj: any, eventName: string, params: Ember.Array, actions: Ember.Array): void;
   /**
    * Define a property as a function that should be executed when a specified event or events are triggered.
    */
-  function on(eventNames: string, func: Function): void;
+  export function on(eventNames: string, func: Function): void;
   /**
    * To get multiple properties at once, call `Ember.getProperties` with an object followed by a list of strings or an array:
    */
-  function getProperties(obj: {}, ...list: string[]): {};
+  export function getProperties(obj: {}, ...list: string[]): {};
   /**
    * A value is blank if it is empty or a whitespace string.
    */
-  function isBlank(obj: {}): boolean;
+  export function isBlank(obj: {}): boolean;
   /**
    * Verifies that a value is `null` or an empty string, empty array, or empty function.
    */
-  function isEmpty(obj: {}): boolean;
+  export function isEmpty(obj: {}): boolean;
   /**
    * Returns true if the passed value is null or undefined. This avoids errors from JSLint complaining about use of ==, which can be technically confusing.
    */
-  function isNone(obj: {}): boolean;
+  export function isNone(obj: {}): boolean;
   /**
    * A value is present if it not `isBlank`.
    */
-  function isPresent(obj: {}): boolean;
+  export function isPresent(obj: {}): boolean;
   /**
    * Merge the contents of two objects together into the first object.
    */
-  function merge(original: {}, updates: {}): {};
+  export function merge(original: {}, updates: {}): {};
   /**
    * Makes a method available via an additional name.
    */
-  function aliasMethod(methodName: string);
+  export function aliasMethod(methodName: string);
   /**
    * Specify a method that observes property changes.
    */
-  function observer(propertyNames: string, func: Function): void;
-  function addObserver(obj: any, _path: string, target: {}|Function, method: Function|string);
-  function removeObserver(obj: any, path: string, target: {}|Function, method: Function|string);
+  export function observer(propertyNames: string, func: Function): void;
+  export function addObserver(obj: any, _path: string, target: {}|Function, method: Function|string);
+  export function removeObserver(obj: any, path: string, target: {}|Function, method: Function|string);
   /**
    * Gets the value of a property on an object. If the property is computed, the function will be invoked. If the property is not defined but the object implements the `unknownProperty` method then that will be invoked.
    */
-  function get(obj: {}, keyName: string): {};
+  export function get(obj: {}, keyName: string): {};
   /**
    * Retrieves the value of a property from an Object, or a default value in the case that the property returns `undefined`.
    */
-  function getWithDefault(obj: {}, keyName: string, defaultValue: {}): {};
+  export function getWithDefault(obj: {}, keyName: string, defaultValue: {}): {};
   /**
    * Sets the value of a property on an object, respecting computed properties and notifying observers and other listeners of the change. If the property is not defined but the object implements the `setUnknownProperty` method then that will be invoked as well.
    */
-  function set(obj: {}, keyName: string, value: {}): {};
+  export function set(obj: {}, keyName: string, value: {}): {};
   /**
    * Error-tolerant form of `Ember.set`. Will not blow up if any part of the chain is `undefined`, `null`, or destroyed.
    */
-  function trySet(root: {}, path: string, value: {});
+  export function trySet(root: {}, path: string, value: {});
   /**
    * Set a list of properties on an object. These properties are set inside a single `beginPropertyChanges` and `endPropertyChanges` batch, so observers will be buffered.
    */
-  function setProperties(obj: any, properties: {}): void;
+  export function setProperties(obj: any, properties: {}): void;
   /**
    * Returns a unique id for the object. If the object does not yet have a guid, one will be assigned to it. You can call this on any object, `Ember.Object`-based or not, but be aware that it will add a `_guid` property.
    */
-  function guidFor(obj: {}): string;
+  export function guidFor(obj: {}): string;
   /**
    * Checks to see if the `methodName` exists on the `obj`, and if it does, invokes it with the arguments passed.
    */
-  function tryInvoke(obj: {}, methodName: string, args: Ember.Array): any;
+  export function tryInvoke(obj: {}, methodName: string, args: Ember.Array): any;
   /**
    * Creates an `Ember.NativeArray` from an Array like object. Does not modify the original object. Ember.A is not needed if `Ember.EXTEND_PROTOTYPES` is `true` (the default value). However, it is recommended that you use Ember.A when creating addons for ember or when you can not guarantee that `Ember.EXTEND_PROTOTYPES` will be `true`.
    */
-  function A(): NativeArray;
+  export function A(): NativeArray;
   /**
    * Compares two javascript values and returns:
    */
-  function compare(v: {}, w: {}): number;
+  export function compare(v: {}, w: {}): number;
   /**
    * Creates a shallow copy of the passed object. A deep copy of the object is returned if the optional `deep` argument is `true`.
    */
-  function copy(obj: {}, deep: boolean): {};
+  export function copy(obj: {}, deep: boolean): {};
   /**
    * Compares two objects, returning true if they are equal.
    */
-  function isEqual(a: {}, b: {}): boolean;
+  export function isEqual(a: {}, b: {}): boolean;
   /**
    * Returns true if the passed object is an array or Array-like.
    */
-  function isArray(obj: {}): boolean;
+  export function isArray(obj: {}): boolean;
   /**
    * Returns a consistent type for the passed object.
    */
-  function typeOf(item: {}): string;
+  export function typeOf(item: {}): string;
   /**
    * Alias for jQuery
    */
-  function $();
+  export function $();
   export namespace RSVP {
     export class EventTarget {
     }
@@ -213,108 +213,6 @@ declare namespace Ember {
       location: string;
     }
   }
-  export namespace Templates {
-    export class helpers {
-      /**
-       * Concatenates the given arguments into a string.
-       */
-      concat();
-      /**
-       * The `{{each-in}}` helper loops over properties on an object. It is unbound, in that new (or removed) properties added to the target object will not be rendered.
-       */
-      'each-in'();
-      /**
-       * The `{{#each}}` helper loops over elements in a collection. It is an extension of the base Handlebars `{{#each}}` helper.
-       */
-      each();
-      /**
-       * Use the `{{hash}}` helper to create a hash to pass as an option to your components. This is specially useful for contextual components where you can just yield a hash:
-       */
-      hash(options: {}): {};
-      /**
-       * Use the `if` block helper to conditionally render a block depending on a property. If the property is "falsey", for example: `false`, `undefined`, `null`, `""`, `0`, `NaN` or an empty array, the block will not be rendered.
-       */
-      if();
-      /**
-       * The `unless` helper is the inverse of the `if` helper. Its block will be rendered if the expression contains a falsey value.  All forms of the `if` helper can also be used with `unless`.
-       */
-      unless();
-      /**
-       * Calls [Ember.String.loc](/api/classes/Ember.String.html#method_loc) with the provided string. This is a convenient way to localize text within a template. For example:
-       */
-      loc(str: string);
-      /**
-       * `log` allows you to output the value of variables in the current rendering context. `log` also accepts primitive types such as strings or numbers.
-       */
-      log(values: any);
-      /**
-       * Use the `{{with}}` helper when you want to alias a property to a new name. This is helpful for semantic clarity as it allows you to retain default scope or to reference a property from another `{{with}}` block.
-       */
-      with(options: {}): string;
-      /**
-       * DEPRECATED: Use `{{each}}` helper instead.
-       * `{{collection}}` is a template helper for adding instances of `Ember.CollectionView` to a template. See [Ember.CollectionView](/api/classes/Ember.CollectionView.html) for additional information on how a `CollectionView` functions.
-       */
-      collection();
-      /**
-       * The `{{component}}` helper lets you add instances of `Ember.Component` to a template. See [Ember.Component](/api/classes/Ember.Component.html) for additional information on how a `Component` functions. `{{component}}`'s primary use is for cases where you want to dynamically change which type of component is rendered as the state of your application changes. The provided block will be applied as the template for the component. Given an empty `<body>` the following template:
-       */
-      component();
-      /**
-       * Execute the `debugger` statement in the current template's context.
-       */
-      debugger();
-      /**
-       * Dynamically look up a property on an object. The second argument to `{{get}}` should have a string value, although it can be bound.
-       */
-      get();
-      /**
-       * The `{{input}}` helper lets you create an HTML `<input />` component. It causes an `Ember.TextField` component to be rendered.  For more info, see the [Ember.TextField](/api/classes/Ember.TextField.html) docs and the [templates guide](http://emberjs.com/guides/templates/input-helpers/).
-       */
-      input(options: {});
-      /**
-       * The `mut` helper lets you __clearly specify__ that a child `Component` can update the (mutable) value passed to it, which will __change the value of the parent component__.
-       */
-      mut(attr: {});
-      /**
-       * The `{{outlet}}` helper lets you specify where a child route will render in your template. An important use of the `{{outlet}}` helper is in your application's `application.hbs` file:
-       */
-      outlet(name: string);
-      /**
-       * The `partial` helper renders another template without changing the template context:
-       */
-      partial(partialName: string);
-      /**
-       * `{{textarea}}` inserts a new instance of `<textarea>` tag into the template. The attributes of `{{textarea}}` match those of the native HTML tags as closely as possible.
-       */
-      textarea(options: {});
-      /**
-       * The `{{unbound}}` helper disconnects the one-way binding of a property, essentially freezing its value at the moment of rendering. For example, in this example the display of the variable `name` will not change even if it is set with a new value:
-       */
-      unbound();
-      /**
-       * DEPRECATED: 
-       * `{{view}}` inserts a new instance of an `Ember.View` into a template passing its options to the `Ember.View`'s `create` method and using the supplied block as the view's own template.
-       */
-      view();
-      /**
-       * This is a helper to be used in conjunction with the link-to helper. It will supply url query parameters to the target route.
-       */
-      'query-params'(hash: {}): {};
-      /**
-       * The `{{action}}` helper provides a way to pass triggers for behavior (usually just a function) between components, and into components from controllers.
-       */
-      action();
-      /**
-       * Calling ``{{render}}`` from within a template will insert another template that matches the provided name. The inserted template will access its properties on its own controller (rather than the controller of the parent template). If a view class with the same name exists, the view class also will be used. Note: A given controller may only be used *once* in your app in this manner. A singleton instance of the controller will be created for you. Example:
-       */
-      render(name: string, context: {}, options: {}): string;
-      /**
-       * The `{{link-to}}` component renders a link to the supplied `routeName` passing an optionally supplied model to the route as its `model` context of the route. The block for `{{link-to}}` becomes the innerHTML of the rendered element:
-       */
-      'link-to'(routeName: string, context: {}, options: {}): string;
-    }
-  }
   export namespace streams {
     export namespace Ember {
       export class stream {
@@ -333,107 +231,107 @@ declare namespace Ember {
     /**
      * Loads a route, sets up any controllers, and renders any templates associated with the route as though a real user had triggered the route change while using your app.
      */
-    function visit(url: string): Ember.RSVP.Promise;
+    export function visit(url: string): Ember.RSVP.Promise;
     /**
      * Clicks an element and triggers any actions triggered by the element's `click` event.
      */
-    function click(selector: string): Ember.RSVP.Promise;
+    export function click(selector: string): Ember.RSVP.Promise;
     /**
      * Simulates a key event, e.g. `keypress`, `keydown`, `keyup` with the desired keyCode
      */
-    function keyEvent(selector: string, type: string, keyCode: number): Ember.RSVP.Promise;
+    export function keyEvent(selector: string, type: string, keyCode: number): Ember.RSVP.Promise;
     /**
      * Fills in an input element with some text.
      */
-    function fillIn(selector: string, text: string): Ember.RSVP.Promise;
+    export function fillIn(selector: string, text: string): Ember.RSVP.Promise;
     /**
      * Finds an element in the context of the app's container element. A simple alias for `app.$(selector)`.
      */
-    function find(selector: string): {};
+    export function find(selector: string): {};
     /**
      * Like `find`, but throws an error if the element selector returns no results.
      */
-    function findWithAssert(selector: string): {};
+    export function findWithAssert(selector: string): {};
     /**
      * Causes the run loop to process any pending events. This is used to ensure that any async operations from other helpers (or your assertions) have been processed.
      */
-    function wait(value: {}): Ember.RSVP.Promise;
+    export function wait(value: {}): Ember.RSVP.Promise;
     /**
      * Returns the currently active route name.
      */
-    function currentRouteName(): {};
+    export function currentRouteName(): {};
     /**
      * Returns the current path.
      */
-    function currentPath(): {};
+    export function currentPath(): {};
     /**
      * Returns the current URL.
      */
-    function currentURL(): {};
+    export function currentURL(): {};
     /**
      * Pauses the current test - this is useful for debugging while testing or for test-driving. It allows you to inspect the state of your application at any point.
      */
-    function pauseTest(): {};
+    export function pauseTest(): {};
     /**
      * Triggers the given DOM event on the element identified by the provided selector.
      */
-    function triggerEvent(selector: string, context: string, type: string, options: {}): Ember.RSVP.Promise;
+    export function triggerEvent(selector: string, context: string, type: string, options: {}): Ember.RSVP.Promise;
     /**
      * This hook defers the readiness of the application, so that you can start the app when your tests are ready to run. It also sets the router's location to 'none', so that the window's location will not be modified (preventing both accidental leaking of state between tests and interference with your testing framework).
      */
-    function setupForTesting();
+    export function setupForTesting();
     /**
      * `registerHelper` is used to register a test helper that will be injected when `App.injectTestHelpers` is called.
      */
-    function registerHelper(name: string, helperMethod: Function, options: {});
+    export function registerHelper(name: string, helperMethod: Function, options: {});
     /**
      * `registerAsyncHelper` is used to register an async test helper that will be injected when `App.injectTestHelpers` is called.
      */
-    function registerAsyncHelper(name: string, helperMethod: Function);
+    export function registerAsyncHelper(name: string, helperMethod: Function);
     /**
      * Remove a previously added helper method.
      */
-    function unregisterHelper(name: string);
+    export function unregisterHelper(name: string);
     /**
      * Used to register callbacks to be fired whenever `App.injectTestHelpers` is called.
      */
-    function onInjectHelpers(callback: Function);
+    export function onInjectHelpers(callback: Function);
     /**
      * This returns a thenable tailored for testing.  It catches failed `onSuccess` callbacks and invokes the `Ember.Test.adapter.exception` callback in the last chained then.
      */
-    function promise(resolver: Function, label: string);
+    export function promise(resolver: Function, label: string);
     /**
      * Used to allow ember-testing to communicate with a specific testing framework.
      */
-    var adapter: any;
+    export var adapter: any;
     /**
      * Replacement for `Ember.RSVP.resolve` The only difference is this uses an instance of `Ember.Test.Promise`
      */
-    function resolve(The: any);
+    export function resolve(The: any);
     /**
      * This allows ember-testing to play nicely with other asynchronous events, such as an application that is waiting for a CSS3 transition or an IndexDB transaction.
      */
-    function registerWaiter(context: {}, callback: Function);
+    export function registerWaiter(context: {}, callback: Function);
     /**
      * `unregisterWaiter` is used to unregister a callback that was registered with `registerWaiter`.
      */
-    function unregisterWaiter(context: {}, callback: Function);
+    export function unregisterWaiter(context: {}, callback: Function);
     /**
      * This property contains the testing helpers for the current application. These are created once you call `injectTestHelpers` on your `Ember.Application` instance. The included helpers are also available on the `window` object by default, but can be used from this object on the individual application also.
      */
-    var testHelpers: {};
+    export var testHelpers: {};
     /**
      * This property indicates whether or not this application is currently in testing mode. This is set when `setupForTesting` is called on the current application.
      */
-    var testing: boolean;
+    export var testing: boolean;
     /**
      * This injects the test helpers into the `helperContainer` object. If an object is provided it will be used as the helperContainer. If `helperContainer` is not set it will default to `window`. If a function of the same name has already been defined it will be cached (so that it can be reset if the helper is removed with `unregisterHelper` or `removeTestHelpers`).
      */
-    function injectTestHelpers();
+    export function injectTestHelpers();
     /**
      * This removes all helpers that have been registered, and resets and functions that were overridden by the helpers.
      */
-    function removeTestHelpers();
+    export function removeTestHelpers();
     /**
      * The primary purpose of this class is to create hooks that can be implemented by an adapter for various test frameworks.
      */

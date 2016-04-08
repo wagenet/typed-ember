@@ -1,6 +1,8 @@
 # Typed Ember Js
 The type definition for [`ember.js`](https://github.com/emberjs/ember.js)
 
+See also ['ember-typings-generator'](https://github.com/wagenet/ember-typings-generator).
+
 ## LICENSE
 MIT
 
@@ -35,10 +37,6 @@ e.g. if you are creating typings for `chai@3.5.0`, then:
 ## To Do
 
 * Properly handle prototype extensions
-* Define types of arrays where possible
-* Ignore Handlebars helpers?
 * Make Ember.Handlebars accessible
-* Class constructors?
-* See if we can further improve methods with multiple signatures
 * Better handling of undeclared constants
-* Consider pre-processing the docs.json so we can move hacks out of main generator code
+* Run some of Ember's tests with typings enabled
