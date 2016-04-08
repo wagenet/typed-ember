@@ -1,7 +1,7 @@
 # Typed Ember Js
 The type definition for [`ember.js`](https://github.com/emberjs/ember.js)
 
-See also ['ember-typings-generator'](https://github.com/wagenet/ember-typings-generator).
+See also [`ember-typings-generator`](https://github.com/wagenet/ember-typings-generator).
 
 ## LICENSE
 MIT
