@@ -4,6 +4,11 @@ The type definition for [`ember.js`](https://github.com/emberjs/ember.js)
 ## LICENSE
 MIT
 
+## Installation
+```sh
+typings install github:wagenet/typed-ember
+```
+
 ## Contributing
 
 ```sh

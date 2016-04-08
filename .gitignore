@@ -40,8 +40,5 @@ node_modules
 # typings
 typings
 
-# Generated intermediate d.ts
-index.d.ts
-
 # output folder
 out
